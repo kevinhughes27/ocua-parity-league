@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<link href="assets/bootstrap.min.css" rel="stylesheet">
+
+<style>
+.bar {
+  fill: steelblue;
+}
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+</style>
+
+<div id="app" class="container">
+  <div class="row text-center">
+    <h1>OCUA Parity League Stat Comparer</h1>
+    <p>by Kevin Hughes</p>
+    <hr>
+  </div>
+
+  <div id="loading" class="row text-center">
+    <img src="assets/loading1.gif">
+  </div>
+
+  <div id="loaded" style="display: none;">
+    <div class="row text-center">
+      <svg class="chart"></svg>
+      <hr>
+    </div>
+
+    <input type="text" class="form-control typeahead" id="player" placeholder="Player">
+
+  </div>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
+<!-- <script src="http://underscorejs.org/underscore-min.js"></script> -->
+<script src="vendor/d3.min.js"></script>
+<script src="vendor/underscore.min.js"></script>
+<script src="vendor/bootstrap.min.js"></script>
+<script src="vendor/typeahead.bundle.min.js"></script>
+<script src="vendor/tabletop.js"></script>
+<script src="app.js"></script>
