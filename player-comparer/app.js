@@ -8,18 +8,23 @@ var playerNames; // global var containing all the player names for autocomplete
  * Global Chart Config
  */
 var margin = {top: 20, right: 30, bottom: 30, left: 40},
-    width = 960 - margin.left - margin.right,
+    width = 1080 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
-var x = d3.scale.ordinal()
+var x0 = d3.scale.ordinal()
     .rangeRoundBands([0, width], .1);
+
+var x1 = d3.scale.ordinal();
 
 var y = d3.scale.linear()
     .range([height, 0]);
 
+var color = d3.scale.ordinal()
+    .range(["#98abc5", "#ff8c00"]);
+
 var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
+     .scale(x0)
+     .orient("bottom");
 
 var yAxis = d3.svg.axis()
     .scale(y)
@@ -50,12 +55,28 @@ function main(data, tabletop){
   $("div#app > div#loaded").show();
 
   // grab the first player
-  var playerName = spreadsheetData[0].playersname;
-  var playerData = transformPlayerData(spreadsheetData[0]);
+  //var playerName = spreadsheetData[0].playersname;
+  //var playerData = transformPlayerData(spreadsheetData[0]);
 
   // graph and set the input state
-  graphPlayer(playerData);
-  $('input#player').typeahead('val', playerName);
+  //graphPlayer(playerData);
+  //$('input#player').typeahead('val', playerName);
+
+  // grab the first 2 players
+  var playerA = {
+    name: spreadsheetData[0].playersname,
+    stats: transformPlayerData(spreadsheetData[0])
+  };
+
+  var playerB = {
+    name: spreadsheetData[1].playersname,
+    stats: transformPlayerData(spreadsheetData[1])
+  };
+
+  // graph and set the input state
+  graphPlayers(playerA, playerB);
+  $('input#playerA').typeahead('val', playerA.name);
+  $('input#playerB').typeahead('val', playerB.name);
 }
 
 
@@ -87,12 +108,12 @@ var playerNameMatcher = function(){
 };
 
 
-$("input#player").on("focus", function(event){
+$("input.typeahead").on("focus", function(event){
   $(event.target).val('');
 });
 
 
-$('input#player').typeahead({
+$('input.typeahead').typeahead({
   hint: true,
   highlight: true,
   minLength: 1
@@ -104,12 +125,26 @@ $('input#player').typeahead({
 });
 
 
-$("input#player").on("typeahead:closed", function(event){
-  var playerName = $(event.target).val();
-  var playerData = _.find(spreadsheetData, function(player){ return player.playersname == playerName});
-  if(playerName){
-    playerData = transformPlayerData(playerData);
-    updateGraph(playerData);
+$("input.typeahead").on("typeahead:closed", function(event){
+  var playerAName = $("input#playerA").val();
+  var playerAData = _.find(spreadsheetData, function(player){ return player.playersname == playerAName});
+
+
+  var playerBName = $("input#playerB").val();
+  var playerBData = _.find(spreadsheetData, function(player){ return player.playersname == playerBName});
+
+  if(playerAData && playerBData){
+    playerA = {
+      name: playerAName,
+      stats: transformPlayerData(playerAData)
+    }
+
+    playerB = {
+      name: playerBName,
+      stats: transformPlayerData(playerBData)
+    }
+
+    updateGraph(playerA, playerB);
   }
 });
 
@@ -139,32 +174,92 @@ function transformPlayerData(data){
 }
 
 
-function graphPlayer(data){
+// function graphPlayer(data){
+//   // scale
+//   x.domain(data.map(function(d) { return d.name; }));
+//   y.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+//   //create the x axis
+//   chart.append("g")
+//     .attr("class", "x axis")
+//     .attr("transform", "translate(0," + height + ")")
+//     .call(xAxis);
+
+//   //create the y axis
+//   chart.append("g")
+//     .attr("class", "y axis")
+//     .call(yAxis);
+
+//   //create the rectangles
+//   chart.selectAll(".bar")
+//     .data(data)
+//     .enter()
+//       .append("rect")
+//       .attr("class", "bar")
+//       .attr("x", function(d) { return x(d.name); })
+//       .attr("y", height )
+//       .attr("width", x.rangeBand())
+//       .attr("height", 0)
+//     .transition()
+//       .duration(200)
+//       .attr("y", function(d) { return y(d.value); })
+//       .attr("height", function(d) { return height - y(d.value); });
+// }
+
+
+// function updateGraph(data){
+//   chart.selectAll(".bar")
+//     .data(data)
+//     .transition()
+//       .duration(200)
+//       .attr("y", function(d) { return y(d.value); })
+//       .attr("height", function(d) { return height - y(d.value); });
+// }
+
+
+function graphPlayers(playerA, playerB){
+  // assemble data
+  data = []
+  for (i = 0; i < playerA.stats.length; i++) {
+    var stat = playerA.stats[i].name;
+    var playerAStat = playerA.stats[i].value;
+    var playerBStat = playerB.stats[i].value;
+
+    data.push({name: stat, playerA: playerAStat, playerB: playerBStat });
+  }
+
   // scale
-  x.domain(data.map(function(d) { return d.name; }));
-  y.domain([0, d3.max(data, function(d) { return d.value; })]);
+  y.domain([0, d3.max(data, function(d) { return Math.max(d.playerA, d.playerB); })]);
+  x0.domain(data.map(function(d) { return d.name; }));
+  x1.domain(['playerA', 'playerB']).rangeRoundBands([0, x0.rangeBand()]);
 
-  //create the x axis
+  // create the x axis
   chart.append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(xAxis);
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
 
-  //create the y axis
+  // create the y axis
   chart.append("g")
-    .attr("class", "y axis")
-    .call(yAxis);
+      .attr("class", "y axis")
+      .call(yAxis)
 
-  //create the rectangles
-  chart.selectAll(".bar")
+  // create the rectangles for each stat
+  var stats = chart.selectAll(".stat")
     .data(data)
-    .enter()
-      .append("rect")
-      .attr("class", "bar")
-      .attr("x", function(d) { return x(d.name); })
-      .attr("y", height )
-      .attr("width", x.rangeBand())
+    .enter().append("g")
+      .attr("class", "g")
+      .attr("transform", function(d) { return "translate(" + x0(d.name) + ",0)"; });
+
+  // create the rectangles for each player in each stat
+  stats.selectAll("rect")
+      .data(function(d) { return [{name: 'playerA', value: d.playerA}, {name: 'playerB', value: d.playerB}] })
+    .enter().append("rect")
+      .attr("width", x1.rangeBand())
+      .attr("x", function(d) { return x1(d.name); })
+      .attr("y", height)
       .attr("height", 0)
+      .style("fill", function(d) { return color(d.name); })
     .transition()
       .duration(200)
       .attr("y", function(d) { return y(d.value); })
@@ -172,8 +267,22 @@ function graphPlayer(data){
 }
 
 
-function updateGraph(data){
-  chart.selectAll(".bar")
+function updateGraph(playerA, playerB){
+  // assemble data
+  data = []
+  for (i = 0; i < playerA.stats.length; i++) {
+    var playerAStat = playerA.stats[i].value;
+    var playerBStat = playerB.stats[i].value;
+
+    data.push({name: 'playerA', value: playerAStat});
+    data.push({name: 'playerB', value: playerBStat});
+  }
+
+  // re-scale
+  y.domain([0, d3.max(data, function(d) { return (d.value); })]);
+
+  // animate update
+  chart.selectAll("rect")
     .data(data)
     .transition()
       .duration(200)
