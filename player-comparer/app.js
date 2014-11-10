@@ -142,6 +142,14 @@ $("input.typeahead").on("typeahead:closed", function(event){
 
 
 function transformPlayerData(data){
+  function transformPercent(str){
+    return str.substring(0, str.length - 1) / 10.0;
+  }
+
+  function transformSalary(str){
+    return str.replace(/\D/g,'') / 50000.0;
+  }
+
   return [
     {name: "G", value: +data.g},
     {name: "A", value: +data.a},
@@ -153,15 +161,15 @@ function transformPlayerData(data){
     {name: "2A", value: +data.a_2},
     {name: "Comp.", value: +data['comp.']},
     {name: "TA", value: +data.ta},
-    //{name: "Threw Drop", value: +data.threwDrop},
-    //{name: "Throwing %", value: +data.throwing},
+    {name: "TD", value: +data.threwdrop},
+    {name: "Throwing %", value: transformPercent(data.throwing)},
     {name: "Catch", value: +data.catch},
     {name: "Drop", value: +data.drop},
-    //{name: "Catching %", value: +data.catching},
-    {name: "Points For", value: +data.pointsfor},
-    {name: "Points Against", value: +data.pointsagainst}
-    //{name: "Previous Salaray", value: +data.previoussalary},
-    //{name: "Next Week's Salaray", value: +data.nextweekssalary}
+    {name: "Catching %", value: transformPercent(data.catching)},
+    {name: "PF", value: +data.pointsfor},
+    {name: "PA", value: +data.pointsagainst},
+    {name: "Salaray", value: transformSalary(data.previoussalary)},
+    {name: "New Salaray", value: transformSalary(data.nextweekssalary)},
   ];
 }
 
