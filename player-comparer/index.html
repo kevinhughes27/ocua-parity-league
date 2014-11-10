@@ -1,72 +1,78 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
+<html>
+<head>
+  <meta charset="utf-8">
 
-<link href="assets/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/bootstrap.min.css" rel="stylesheet">
 
-<style>
-.axis {
-  font: 10px sans-serif;
-}
+  <style>
+  .axis {
+    font: 10px sans-serif;
+  }
 
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
 
-.player {
-  font-weight: bold;
-}
+  .player {
+    font-weight: bold;
+  }
 
-.playerA {
-  background-color: #98abc5;
-}
+  .playerA {
+    background-color: #98abc5;
+  }
 
-.playerB{
-  background-color: #ff8c00;
-}
-</style>
+  .playerB{
+    background-color: #ff8c00;
+  }
+  </style>
+</head>
 
-<a href="https://github.com/pickle27/ocua-parity-league"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/c6286ade715e9bea433b4705870de482a654f78a/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_white_ffffff.png"></a>
+<body>
+  <a href="https://github.com/pickle27/ocua-parity-league"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/c6286ade715e9bea433b4705870de482a654f78a/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_white_ffffff.png"></a>
 
-<div id="app" class="container">
-  <div class="row text-center">
-    <h1>OCUA Parity League Stat Comparer</h1>
-    <p>by Kevin Hughes</p>
-    <hr>
-  </div>
-
-  <div id="loading" class="row text-center">
-    <img src="assets/loading1.gif">
-  </div>
-
-  <div id="loaded" style="display: none;">
+  <div id="app" class="container">
     <div class="row text-center">
-      <svg class="chart"></svg>
+      <h1>OCUA Parity League Stat Comparer</h1>
+      <p>by Kevin Hughes</p>
       <hr>
     </div>
 
-    <div class=" player row">
-      <div class="col-md-6">
-        <input type="text" class="playerA form-control typeahead" id="playerA" placeholder="Player">
+    <div id="loading" class="row text-center">
+      <img src="assets/loading1.gif">
+    </div>
+
+    <div id="loaded" style="display: none;">
+      <div class="row text-center">
+        <svg class="chart"></svg>
+        <hr>
       </div>
 
-      <div class="col-md-6">
-        <span class="pull-right">
-          <input type="text" class="playerB form-control typeahead" id="playerB" placeholder="Player">
-        </span>
+      <div class=" player row">
+        <div class="col-md-6">
+          <input type="text" class="playerA form-control typeahead" id="playerA" placeholder="Player">
+        </div>
+
+        <div class="col-md-6">
+          <span class="pull-right">
+            <input type="text" class="playerB form-control typeahead" id="playerB" placeholder="Player">
+          </span>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
-<!-- <script src="http://underscorejs.org/underscore-min.js"></script> -->
-<script src="vendor/d3.min.js"></script>
-<script src="vendor/underscore.min.js"></script>
-<script src="vendor/bootstrap.min.js"></script>
-<script src="vendor/typeahead.bundle.min.js"></script>
-<script src="vendor/tabletop.js"></script>
-<script src="app.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
+  <!-- <script src="http://underscorejs.org/underscore-min.js"></script> -->
+  <script src="vendor/d3.min.js"></script>
+  <script src="vendor/underscore.min.js"></script>
+  <script src="vendor/bootstrap.min.js"></script>
+  <script src="vendor/typeahead.bundle.min.js"></script>
+  <script src="vendor/tabletop.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
