@@ -54,14 +54,6 @@ function main(data, tabletop){
   $("div#app > div#loading").hide();
   $("div#app > div#loaded").show();
 
-  // grab the first player
-  //var playerName = spreadsheetData[0].playersname;
-  //var playerData = transformPlayerData(spreadsheetData[0]);
-
-  // graph and set the input state
-  //graphPlayer(playerData);
-  //$('input#player').typeahead('val', playerName);
-
   // grab the first 2 players
   var playerA = {
     name: spreadsheetData[0].playersname,
@@ -172,49 +164,6 @@ function transformPlayerData(data){
     //{name: "Next Week's Salaray", value: +data.nextweekssalary}
   ];
 }
-
-
-// function graphPlayer(data){
-//   // scale
-//   x.domain(data.map(function(d) { return d.name; }));
-//   y.domain([0, d3.max(data, function(d) { return d.value; })]);
-
-//   //create the x axis
-//   chart.append("g")
-//     .attr("class", "x axis")
-//     .attr("transform", "translate(0," + height + ")")
-//     .call(xAxis);
-
-//   //create the y axis
-//   chart.append("g")
-//     .attr("class", "y axis")
-//     .call(yAxis);
-
-//   //create the rectangles
-//   chart.selectAll(".bar")
-//     .data(data)
-//     .enter()
-//       .append("rect")
-//       .attr("class", "bar")
-//       .attr("x", function(d) { return x(d.name); })
-//       .attr("y", height )
-//       .attr("width", x.rangeBand())
-//       .attr("height", 0)
-//     .transition()
-//       .duration(200)
-//       .attr("y", function(d) { return y(d.value); })
-//       .attr("height", function(d) { return height - y(d.value); });
-// }
-
-
-// function updateGraph(data){
-//   chart.selectAll(".bar")
-//     .data(data)
-//     .transition()
-//       .duration(200)
-//       .attr("y", function(d) { return y(d.value); })
-//       .attr("height", function(d) { return height - y(d.value); });
-// }
 
 
 function graphPlayers(playerA, playerB){
