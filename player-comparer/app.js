@@ -19,16 +19,23 @@ var x1 = d3.scale.ordinal();
 var y = d3.scale.linear()
     .range([height, 0]);
 
-var color = d3.scale.ordinal()
-    .range(["#98abc5", "#ff8c00"]);
+var klass = d3.scale.ordinal()
+    .range(["playerA", "playerB"]);
 
 var xAxis = d3.svg.axis()
-     .scale(x0)
-     .orient("bottom");
+    .scale(x0)
+    .orient("bottom");
 
 var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left");
+
+var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(d) {
+      return "<span class=" + d.name +">" + d.value + "</span>";
+    });
 
 var chart = d3.select(".chart")
     .attr("width", width + margin.left + margin.right)
@@ -36,7 +43,7 @@ var chart = d3.select(".chart")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
+chart.call(tip);
 
 function init(){
   Tabletop.init({ key: ocua_spreadsheet_url,
@@ -212,11 +219,13 @@ function graphPlayers(playerA, playerB){
   stats.selectAll("rect")
       .data(function(d) { return [{name: 'playerA', value: d.playerA}, {name: 'playerB', value: d.playerB}] })
     .enter().append("rect")
+      .attr("class", function(d) { return klass(d.name); })
       .attr("width", x1.rangeBand())
       .attr("x", function(d) { return x1(d.name); })
       .attr("y", height)
       .attr("height", 0)
-      .style("fill", function(d) { return color(d.name); })
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide)
     .transition()
       .duration(200)
       .attr("y", function(d) { return y(d.value); })
