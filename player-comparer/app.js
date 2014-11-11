@@ -168,8 +168,8 @@ function transformPlayerData(data){
     {name: "Catching %", value: transformPercent(data.catching)},
     {name: "PF", value: +data.pointsfor},
     {name: "PA", value: +data.pointsagainst},
-    {name: "Salaray", value: transformSalary(data.previoussalary)},
-    {name: "New Salaray", value: transformSalary(data.nextweekssalary)},
+    {name: "Salary", value: transformSalary(data.previoussalary)},
+    {name: "New Salary", value: transformSalary(data.nextweekssalary)},
   ];
 }
 
