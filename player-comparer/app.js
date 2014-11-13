@@ -34,7 +34,7 @@ var tip = d3.tip()
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(d) {
-      return "<span class=" + d.player +">" + d.value + "</span>";
+      return "<span class=" + d.player +">" + d.name + ": " + d.value + "</span>";
     });
 
 var chart = d3.select(".chart")
@@ -217,7 +217,7 @@ function graphPlayers(playerA, playerB){
 
   // create the rectangles for each player in each stat
   stats.selectAll("rect")
-      .data(function(d) { return [{player: 'playerA', value: d.playerA}, {player: 'playerB', value: d.playerB}] })
+      .data(function(d) { return [{player: 'playerA', name: d.name, value: d.playerA}, {player: 'playerB', name: d.name, value: d.playerB}] })
     .enter().append("rect")
       .attr("class", function(d) { return klass(d.player); })
       .attr("width", x1.rangeBand())
@@ -237,11 +237,12 @@ function updateGraph(playerA, playerB){
   // assemble data
   data = []
   for (i = 0; i < playerA.stats.length; i++) {
+    var stat = playerA.stats[i].name;
     var playerAStat = playerA.stats[i].value;
     var playerBStat = playerB.stats[i].value;
 
-    data.push({player: 'playerA', value: playerAStat});
-    data.push({player: 'playerB', value: playerBStat});
+    data.push({name: stat, player: 'playerA', value: playerAStat});
+    data.push({name: stat, player: 'playerB', value: playerBStat});
   }
 
   // re-scale
