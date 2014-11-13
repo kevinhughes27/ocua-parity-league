@@ -1,4 +1,4 @@
-window.onload = function() { init() };
+window.onload = function() { load() };
 
 var ocua_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1IWfE1OPS7yT9teBp80gcAOJ67CTUiocwB0kfTRa9iDI/pubhtml?gid=1816341719&single=true';
 var spreadsheetData; // global var where the spreadsheet data will be stored after it is fetched
@@ -34,7 +34,8 @@ var tip = d3.tip()
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(d) {
-      return "<span class=" + d.player +">" + d.name + ": " + d.value + "</span>";
+      ud = untransformPlayerData(d);
+      return "<span class=" + d.player +">" + ud.name + ": " + ud.value + "</span>";
     });
 
 var chart = d3.select(".chart")
@@ -45,14 +46,14 @@ var chart = d3.select(".chart")
 
 chart.call(tip);
 
-function init(){
+function load(){
   Tabletop.init({ key: ocua_spreadsheet_url,
-                  callback: main,
+                  callback: init,
                   simpleSheet: true })
 }
 
 
-function main(data, tabletop){
+function init(data, tabletop){
   // set global vars
   spreadsheetData = data;
   playerNames = _.pluck(spreadsheetData, 'playersname');
@@ -147,7 +148,10 @@ $("input.typeahead").on("typeahead:closed", function(event){
   }
 });
 
-
+/*
+ * Transforms the data from a spreadsheet row into
+ * a useable JS object for plotting
+ */
 function transformPlayerData(data){
   function transformPercent(str){
     return str.substring(0, str.length - 1) / 10.0;
@@ -165,7 +169,6 @@ function transformPlayerData(data){
     {name: "4A", value: +data.a_4},
     {name: "5A", value: +data.a_5},
     {name: "D", value: +data.d},
-    {name: "2A", value: +data.a_2},
     {name: "Comp.", value: +data['comp.']},
     {name: "TA", value: +data.ta},
     {name: "TD", value: +data.threwdrop},
@@ -180,6 +183,38 @@ function transformPlayerData(data){
   ];
 }
 
+/*
+ * Transforms the data the plotted JS object
+ * into a readable form for the rect tooltip
+ */
+function untransformPlayerData(d){
+  var name = {
+    "G": "Goals",
+    "A": "Assists",
+    "2A": "2nd Assists",
+    "3A": "3rd Assists",
+    "4A": "4th Assists",
+    "5A": "5th Assists",
+    "D": "Defenses",
+    "Comp.": "Completions",
+    "TA": "Throw Aways",
+    "TD": "Threw Drops",
+    "Throwing %": "Throwing",
+    "Catch": "Catches",
+    "Drop": "Drops",
+    "Catching %": "Catching",
+    "PF": "Points for",
+    "PA": "Points against",
+    "Salary": "Salary",
+    "New Salary": "New Salary"
+  }[d.name];
+
+  var value = d.value
+  if(d.name == "Throwing %" || d.name == "Catching %") { value = (value*10) + '%'; }
+  if(d.name == "Salary" || d.name == "New Salary") { value =  '$' + (value*50000.0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+
+  return {name: name, value: value}
+}
 
 function graphPlayers(playerA, playerB){
   // assemble data
