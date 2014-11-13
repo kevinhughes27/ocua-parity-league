@@ -125,7 +125,6 @@ $('input.typeahead').typeahead({
 });
 
 
-
 $("input.typeahead").on("typeahead:closed", function(event){
   updateGraphEvent(event);
 });
@@ -134,6 +133,7 @@ $("input.typeahead").on("typeahead:closed", function(event){
 $("input.typeahead").on("blur", function(event){
   updateGraphEvent(event);
 });
+
 
 function updateGraphEvent(event) {
   var playerAName = $("input#playerA").val();
@@ -157,6 +157,7 @@ function updateGraphEvent(event) {
     updateGraph(playerA, playerB);
   }
 }
+
 
 /*
  * Transforms the data from a spreadsheet row into
@@ -193,6 +194,7 @@ function transformPlayerData(data){
   ];
 }
 
+
 /*
  * Transforms the data the plotted JS object
  * into a readable form for the rect tooltip
@@ -225,6 +227,7 @@ function untransformPlayerData(d){
 
   return {name: name, value: value}
 }
+
 
 function graphPlayers(playerA, playerB){
   // assemble data
