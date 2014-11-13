@@ -125,7 +125,17 @@ $('input.typeahead').typeahead({
 });
 
 
+
 $("input.typeahead").on("typeahead:closed", function(event){
+  updateGraphEvent(event);
+});
+
+
+$("input.typeahead").on("blur", function(event){
+  updateGraphEvent(event);
+});
+
+function updateGraphEvent(event) {
   var playerAName = $("input#playerA").val();
   var playerAData = _.find(spreadsheetData, function(player){ return player.playersname == playerAName});
 
@@ -146,7 +156,7 @@ $("input.typeahead").on("typeahead:closed", function(event){
 
     updateGraph(playerA, playerB);
   }
-});
+}
 
 /*
  * Transforms the data from a spreadsheet row into
