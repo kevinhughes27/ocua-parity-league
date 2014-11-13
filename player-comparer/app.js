@@ -1,6 +1,6 @@
 window.onload = function() { load() };
 
-var ocua_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1IWfE1OPS7yT9teBp80gcAOJ67CTUiocwB0kfTRa9iDI/pubhtml?gid=1816341719&single=true';
+var ocua_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1IWfE1OPS7yT9teBp80gcAOJ67CTUiocwB0kfTRa9iDI/pubhtml?gid=1421681096&single=true'
 var spreadsheetData; // global var where the spreadsheet data will be stored after it is fetched
 var playerNames; // global var containing all the player names for autocomplete
 
