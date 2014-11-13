@@ -30,6 +30,9 @@ var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left");
 
+/*
+ * This function fires on hover and creates the tooltip
+ */
 var tip = d3.tip()
     .attr('class', 'd3-tip')
     .offset([-10, 0])
