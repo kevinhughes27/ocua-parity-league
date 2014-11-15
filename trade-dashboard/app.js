@@ -78,13 +78,10 @@ function init(data, tabletop){
   $("div#app > div#loading").hide();
   $("div#app > div#loaded").show();
 
-  var players = playersFromTeam("Game of Throws");
-  players = sortPlayersBySalary(players);
+  initTeamDropdown(teamNames);
+  reRenderForTeam(teamNames[0]);
 
-  graphTeamSalary(players);
-  drawPlayerTable(players);
-
-  graphTeams({});
+  graphTeams();
 }
 
 function transformSalary(){
@@ -101,8 +98,43 @@ function sortPlayersBySalary(players){
   return _.sortBy(players, function(player){ return player.salary; });
 }
 
+function initTeamDropdown(teamNames){
+  var node = $('#teamDropdown > ul.dropdown-menu ');
+  teamNames.reverse().forEach(function(teamName){
+    li = "\
+      <li>\
+        <a href='#'>\
+        " + teamName + "\
+        </a>\
+      </li>\
+    ";
+    node.append(li);
+  });
+
+  // team changed handler
+  $("#teamDropdown li a").click(function(event){
+    teamName = $(event.target).text().trim();
+    reRenderForTeam(teamName);
+    event.preventDefault();
+  });
+}
+
+function reRenderForTeam(teamName){
+  $('#teamDropdown #btn-text').text(teamName);
+
+  players = playersFromTeam(teamName);
+  players = sortPlayersBySalary(players);
+
+  graphTeamSalary(players);
+  drawPlayerTable(players);
+}
+
 function drawPlayerTable(players){
   var node = $('#players-table > tbody');
+
+  // clear data in the table
+  node.find('tr').remove();
+
   players.reverse().forEach(function(player, index){
     tr = "\
     <tr>\
@@ -139,7 +171,7 @@ function graphTeamSalary(players){
       .text(function(d) { return d.data.playersname; });
 }
 
-function graphTeams(teams){
+function graphTeams(){
   var data = []
   teamNames.forEach(function(teamName){
     players = playersFromTeam(teamName);
