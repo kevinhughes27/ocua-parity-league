@@ -6,9 +6,6 @@ var teamNames; // globabl var containing all team names
 
 var salaryCap = 7692003; // W3
 
-var color = d3.scale.ordinal()
-    .range(d3.range(15));
-
 /**
  * Pie Chart Config
  */
@@ -148,14 +145,21 @@ function drawPlayerTable(players){
 }
 
 function graphTeamSalary(players){
+  pieChart.selectAll('*').remove();
+
+  data = [];
+  players.forEach(function(player, index){
+    data.push({ name: player.playersname, pos: index, salary: player.salary});
+  });
+
   var g = pieChart.selectAll(".arc")
-      .data(pie(players))
+      .data(pie(data))
     .enter().append("g")
       .attr("class", "arc");
 
   g.append("path")
       .attr("d", arc)
-      .attr("class", function(d) { return "green-" + color(d.data.playersname); })
+      .attr("class", function(d) { return "green-" + d.data.pos; })
 
   g.append("text")
       .attr("transform", function(d) {
@@ -168,7 +172,7 @@ function graphTeamSalary(players){
       })
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
-      .text(function(d) { return d.data.playersname; });
+      .text(function(d) { return d.data.name; });
 }
 
 function graphTeams(){
@@ -180,7 +184,7 @@ function graphTeams(){
     var salaries = [];
     var y0 = 0;
     players.forEach(function(player, index){
-      salaries.push({ name: player.playersname, salaray: player.salary, pos: index,
+      salaries.push({ name: player.playersname, salary: player.salary, pos: index,
                       y0: y0, y1: y0 += player.salary });
     });
 
