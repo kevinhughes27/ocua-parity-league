@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <title>trade-dashboard</title>
+
+  <link href="assets/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+
+  body {
+    font: 10px sans-serif;
+  }
+
+  .arc path {
+    stroke: #fff;
+  }
+
+  .green-0{fill: #E5F5E0;}
+  .green-1{fill: #D7EDD4;}
+  .green-2{fill: #C9E5C9;}
+  .green-3{fill: #BBDEBE;}
+  .green-4{fill: #ADD6B3;}
+  .green-5{fill: #9FCFA8;}
+  .green-6{fill: #91C79D;}
+  .green-7{fill: #84C092;}
+  .green-8{fill: #76B887;}
+  .green-9{fill: #68B07C;}
+  .green-10{fill: #5AA971;}
+  .green-11{fill: #4CA166;}
+  .green-12{fill: #3E9A5B;}
+  .green-13{fill: #309250;}
+  .green-14{fill: #238B45;}
+  .yellow{fill: #FFCC00;}
+  </style>
+
+</head>
+
+<body>
+  <div id="app" class="container">
+    <div class="row text-center">
+      <h1>OCUA Parity League Trade Dashboard</h1>
+      <p>by Kevin Hughes</p>
+      <hr>
+    </div>
+
+    <div id="loading" class="row text-center">
+      <img src="assets/loading1.gif">
+    </div>
+
+    <div id="loaded" style="display: none;">
+      <div class="row">
+        <div class="col-md-4">
+          <table class="table table-hover" id="players-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Player</th>
+                <th>Salary</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="col-md-4">
+          <svg class="pie-chart"></svg>
+        </div>
+      </div>
+      <hr>
+
+      <div class="row">
+      </div>
+      <hr>
+
+      <div class="row text-center">
+        <svg class="chart"></svg>
+      </div>
+      <hr>
+    </div>
+  </div>
+
+  <script src="vendor/jquery-2.1.1.min.js"></script>
+  <script src="vendor/d3.min.js"></script>
+  <script src="vendor/d3.tip.v0.6.3.js"></script>
+  <script src="vendor/underscore.min.js"></script>
+  <script src="vendor/bootstrap.min.js"></script>
+  <script src="vendor/typeahead.bundle.min.js"></script>
+  <script src="vendor/tabletop.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
