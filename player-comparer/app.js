@@ -55,7 +55,9 @@ function init(data, tabletop){
   $("div#app > div#loaded").show();
 
   initDataDropdown();
-  reRender(setName);
+  $('#dataDropdown #btn-text').text(setName);
+
+  reRender();
 }
 
 
@@ -79,14 +81,14 @@ function initDataDropdown(){
    */
   $("#dataDropdown li a").click(function(event){
     setName = $(event.target).text().trim();
-    reRender(setName);
+    $('#dataDropdown #btn-text').text(setName);
+    reRender();
     event.preventDefault();
   });
 }
 
-function reRender(setName){
-  // update dropdown text
-  $('#dataDropdown #btn-text').text(setName);
+function reRender(){
+  setName = $('#dataDropdown #btn-text').text();
 
   // get url params if any
   playerAName = getURLParameter('playerA') || 'Male Average';
@@ -163,16 +165,16 @@ $('input.typeahead').typeahead({
 
 
 $("input.typeahead").on("typeahead:closed", function(event){
-  updateGraphEvent(event);
+  updatePlayerEvent(event);
 });
 
 
 $("input.typeahead").on("blur", function(event){
-  updateGraphEvent(event);
+  updatePlayerEvent(event);
 });
 
 
-function updateGraphEvent(event) {
+function updatePlayerEvent(event) {
   var setName = $('#dataDropdown #btn-text').text();
 
   var playerAName = $("input#playerA").val();
