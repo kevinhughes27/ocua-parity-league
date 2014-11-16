@@ -8,7 +8,9 @@ var teamPlayers = []; // global var containing the players of the current team
 var otherPlayers = []; // global var of all the players not on the current team
 var trades = []; // global var holding all the trades
 
-// W3
+var week = 'W2'
+
+// for W3
 var salaryCap = 7692003;
 var salaryFloor = 7622839;
 
@@ -175,12 +177,27 @@ $('#tradeForm').on('submit', function(event){
     trades.push(trade);
     applyTrade(trade);
     event.target.reset();
+    _.defer(tradeUpdate);
   } else {
     alert("Invalid Trade!");
   }
 
   event.preventDefault();
 });
+
+/*
+ * update compare link handlers
+ */
+$('select#tradedPlayer').change(tradeUpdate);
+$('input#receivedPlayer').on('typeahead:closed', tradeUpdate);
+$('input#receivedPlayer').on('blur', tradeUpdate);
+
+function tradeUpdate(event) {
+  var tradedPlayerName = $('#tradedPlayer').val();
+  var receivedPlayerName = $('#receivedPlayer').val();
+  url = 'https://player-comparer.5apps.com/?set=' + week + '&playerA=' + tradedPlayerName + '&playerB=' + receivedPlayerName;
+  $('a#compare').attr('href', url);
+}
 
 /*
  * typeahead.js matcher
