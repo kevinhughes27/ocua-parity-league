@@ -30,24 +30,11 @@ var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left");
 
-/*
- * This function fires on hover and creates the tooltip
- */
-var tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      ud = untransformPlayerData(d);
-      return "<span class=" + d.player +">" + ud.name + ": " + ud.value + "</span>";
-    });
-
 var chart = d3.select(".chart")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-chart.call(tip);
 
 function load(){
   Tabletop.init({ key: ocua_spreadsheet_url,
@@ -258,6 +245,17 @@ function graphPlayers(playerA, playerB){
   chart.append("g")
       .attr("class", "y axis")
       .call(yAxis)
+
+  // tooltip
+  var tip = d3.tip()
+      .attr('class', 'd3-tip')
+      .offset([-10, 0])
+      .html(function(d) {
+         ud = untransformPlayerData(d);
+         return "<span class=" + d.player +">" + ud.name + ": " + ud.value + "</span>";
+       });
+
+  chart.call(tip);
 
   // create the rectangles for each stat
   var stats = chart.selectAll(".stat")

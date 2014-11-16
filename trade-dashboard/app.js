@@ -3,10 +3,11 @@ window.onload = function() { load() };
 var ocua_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1IWfE1OPS7yT9teBp80gcAOJ67CTUiocwB0kfTRa9iDI/pubhtml?gid=1421681096&single=true'
 var spreadsheetData; // global var where the spreadsheet data will be stored after it is fetched
 
-var teamNames; // globabl var containing all team names
-var teamPlayers = []; // globabl var containing the players of the current team
+var teamNames; // global var containing all team names
+var teamPlayers = []; // global var containing the players of the current team
 var otherPlayers = []; // global var of all the players not on the current team
 var trades = []; // global var holding all the trades
+
 var salaryCap = 7692003; // W3
 
 /**
@@ -53,26 +54,18 @@ var yAxis = d3.svg.axis()
     .orient("left")
     .tickFormat(d3.format(".2s"));
 
-var tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      return "<p>" + d.name + "</p> <p>" + salaryString(d.salary) + "</p>";
-    });
-
 var chart = d3.select(".chart")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-chart.call(tip);
-
 function load(){
   Tabletop.init({ key: ocua_spreadsheet_url,
                   callback: init,
                   simpleSheet: true })
 }
+
 
 function init(data, tabletop){
   // set global vars
@@ -381,6 +374,16 @@ function graphTeams(){
       .style("fill", "none")
       .style("stroke-width", 1)
       .style("shape-rendering", "crispEdges");
+
+    // tooltip
+    var tip = d3.tip()
+      .attr('class', 'd3-tip')
+      .offset([-10, 0])
+      .html(function(d) {
+        return "<p>" + d.name + "</p> <p>" + salaryString(d.salary) + "</p>";
+      });
+
+    chart.call(tip);
 
     var team = chart.selectAll(".team")
         .data(data)
