@@ -2,11 +2,12 @@ window.onload = function() { load() };
 
 var ocua_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1IWfE1OPS7yT9teBp80gcAOJ67CTUiocwB0kfTRa9iDI/pubhtml?gid=1421681096&single=true'
 var spreadsheetData; // global var where the spreadsheet data will be stored after it is fetched
+
 var teamNames; // globabl var containing all team names
-
+var teamPlayers = []; // globabl var containing the players of the current team
+var otherPlayers = []; // global var of all the players not on the current team
+var trades = []; // global var holding all the trades
 var salaryCap = 7692003; // W3
-
-var trades = [];
 
 /**
  * Pie Chart Config
@@ -93,6 +94,11 @@ function playersFromTeam(teamName){
   return _.where(spreadsheetData, {currentteam: teamName});
 }
 
+function playersNotFromTeam(teamName){
+  otherTeams = _.reject(teamNames, function(name){ return name == teamName});
+  return _.filter(spreadsheetData, function(player){ return _.contains(otherTeams, player.currentteam); });
+}
+
 function sortPlayersBySalary(players){
   return _.sortBy(players, function(player){ return player.salary; });
 }
@@ -126,11 +132,16 @@ function initTeamDropdown(teamNames){
 $('#tradeForm').on('submit', function(event){
   node = $(event.target)
 
-  var tradedPlayer = node.find('#tradedPlayer').val()
-  var receivedPlayer = node.find('#receivedPlayer').val();
+  var tradedPlayerName = node.find('#tradedPlayer').val();
+  var receivedPlayerName = node.find('#receivedPlayer').val();
+
+  var tradedPlayer = _.find(teamPlayers, function(player){ return player.playersname == tradedPlayerName; })
+  var receivedPlayer = _.find(otherPlayers, function(player){ return player.playersname == receivedPlayerName; })
 
   if(tradedPlayer && receivedPlayer) {
-    trades.push({tradedPlayer: tradedPlayer, receivedPlayer: receivedPlayer});
+    var trade = {tradedPlayer: tradedPlayer, receivedPlayer: receivedPlayer};
+    applyTrade(trade);
+    trades.push(trade);
     renderTrades(trades);
     event.target.reset();
   } else {
@@ -143,11 +154,13 @@ $('#tradeForm').on('submit', function(event){
 function reRenderForTeam(teamName){
   $('#teamDropdown #btn-text').text(teamName);
 
-  players = playersFromTeam(teamName);
-  players = sortPlayersBySalary(players);
+  teamPlayers = playersFromTeam(teamName);
+  teamPlayers = sortPlayersBySalary(teamPlayers);
 
-  graphTeamSalary(players);
-  renderPlayerTable(players);
+  otherPlayers = playersNotFromTeam(teamName);
+
+  graphTeamSalary(teamPlayers);
+  renderPlayerTable(teamPlayers);
 }
 
 function renderPlayerTable(players){
@@ -179,11 +192,11 @@ function renderTrades(trades){
     html = "\
       <div class='form-inline'>\
         <div class='form-group'>\
-          <input type='text' class='form-control input-sm' id='tradedPlayer' disabled='true' value='" + trade.tradedPlayer + "'>\
+          <input type='text' class='form-control input-sm' id='tradedPlayer' disabled='true' value='" + trade.tradedPlayer.playersname + "'>\
         </div>\
         <span>  &nbsp;  --------&gt;  &nbsp;  </span>\
         <div class='form-group'>\
-          <input type='text' class='form-control input-sm' id='receivedPlayer' disabled='true' value='" + trade.receivedPlayer + "'>\
+          <input type='text' class='form-control input-sm' id='receivedPlayer' disabled='true' value='" + trade.receivedPlayer.playersname + "'>\
         </div>\
         " + (index == trades.length-1 ? undo : '') + "\
       </div>\
@@ -196,9 +209,19 @@ function renderTrades(trades){
    * Undo Trade Handler
    */
   $('#undoTrade').click(function(event){
-    trades.pop();
+    trade = trades.pop();
+    var revertedTrade = { tradedPlayer: trade.receivedPlayer, receivedPlayer: trade.tradedPlayer };
+    applyTrade(revertedTrade);
     renderTrades(trades);
   });
+}
+
+function applyTrade(trade){
+  tradingTeam = trade.tradedPlayer.currentteam;
+  trade.tradedPlayer.currentteam = trade.receivedPlayer.currentteam;
+  trade.receivedPlayer.currentteam = tradingTeam;
+
+  reRenderForTeam(tradingTeam);
 }
 
 function graphTeamSalary(players){
