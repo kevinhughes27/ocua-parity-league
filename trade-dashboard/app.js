@@ -74,6 +74,7 @@ function init(data, tabletop){
 
   teamNames = _.uniq(_.pluck(spreadsheetData, 'currentteam'));
   teamNames = _.reject(teamNames, function(teamName){ return teamName == 'Substitute' || teamName == '(sub inc)' });
+  teamNames = sortTeams(teamNames);
 
   // toggle loading state
   $("div#app > div#loading").hide();
@@ -89,6 +90,21 @@ function transformSalary(){
   spreadsheetData.forEach(function(player){
     player.salary = +player.nextweekssalary.replace(/\D/g,'');
   });
+}
+
+/*
+ * sorts teams by alternating name length (looks best for the bar chart)
+ */
+function sortTeams(teamNames){
+  lengthSortedNames = _.sortBy(teamNames, function(name) { return name.length});
+
+  sortedNames = [];
+  while(lengthSortedNames.length > 0) {
+    sortedNames.push( lengthSortedNames.shift() );
+    sortedNames.push( lengthSortedNames.pop() );
+  }
+
+  return _.compact(sortedNames);
 }
 
 function playersFromTeam(teamName){
@@ -261,6 +277,9 @@ function renderTrades(trades){
   // clear old data
   $(node).empty();
 
+  // the underscore _.max finds the longest string and puts it in the option
+  // this is a hack to keep the size the same
+  // it breaks if the player with the longest name is traded.
   trades.forEach(function(trade, index){
     undo = "<button class='btn btn-sm btn-default' id='undoTrade'>Undo</button>"
     html = "\
