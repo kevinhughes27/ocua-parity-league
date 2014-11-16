@@ -121,7 +121,11 @@ function initTeamDropdown(teamNames){
    */
   $("#teamDropdown li a").click(function(event){
     teamName = $(event.target).text().trim();
-    reRenderForTeam(teamName);
+    if (trades.length > 0 && confirm("Changing teams will clear trades") == true) {
+      trades = [];
+      renderTrades(trades);
+      reRenderForTeam(teamName);
+    }
     event.preventDefault();
   });
 }
