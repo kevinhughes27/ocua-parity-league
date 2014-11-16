@@ -87,6 +87,9 @@ function initDataDropdown(){
   });
 }
 
+/*
+ * reRender from scratch or on dataSet change
+ */
 function reRender(){
   setName = $('#dataDropdown #btn-text').text();
 
@@ -174,6 +177,9 @@ $("input.typeahead").on("blur", function(event){
 });
 
 
+/*
+ * Update the graph and state when a player input is changed
+ */
 function updatePlayerEvent(event) {
   var setName = $('#dataDropdown #btn-text').text();
 
