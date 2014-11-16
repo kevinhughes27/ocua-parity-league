@@ -53,12 +53,20 @@ var yAxis = d3.svg.axis()
     .orient("left")
     .tickFormat(d3.format(".2s"));
 
+var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(d) {
+      return "<p>" + d.name + "</p> <p>" + salaryString(d.salary) + "</p>";
+    });
+
 var chart = d3.select(".chart")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+chart.call(tip);
 
 function load(){
   Tabletop.init({ key: ocua_spreadsheet_url,
@@ -101,6 +109,10 @@ function playersNotFromTeam(teamName){
 
 function sortPlayersBySalary(players){
   return _.sortBy(players, function(player){ return player.salary; });
+}
+
+function salaryString(salary){
+  return '$ ' + salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 }
 
 function initTeamDropdown(teamNames){
@@ -241,11 +253,10 @@ function renderPlayerTable(players){
   });
 
   var tr;
-  teamSalaryString = '$ ' + teamSalary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   if(teamSalary < salaryCap){
-    tr = "<tr class='underCap'><td></td> <td>Total:</td><td>" + teamSalaryString + "</td></tr>";
+    tr = "<tr class='underCap'><td></td> <td>Total:</td><td>" + salaryString(teamSalary) + "</td></tr>";
   } else {
-    tr = "<tr class='overCap'><td></td> <td>Total:</td><td>" + teamSalaryString + "</td></tr>";
+    tr = "<tr class='overCap'><td></td> <td>Total:</td><td>" + salaryString(teamSalary) + "</td></tr>";
   }
 
   node.append(tr);
@@ -390,6 +401,8 @@ function graphTeams(){
         })
         .attr("y", height)
         .attr("height", 0)
+        .on('mouseover', tip.show)
+        .on('mouseout', tip.hide)
       .transition(300)
         .attr("y", function(d) { return y(d.y1); })
         .attr("height", function(d) { return y(d.y0) - y(d.y1); })
