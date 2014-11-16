@@ -6,6 +6,7 @@
   <title>trade-dashboard</title>
 
   <link href="assets/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/typeahead.js-bootstrap.css" rel="stylesheet">
 
   <style>
 
@@ -59,6 +60,11 @@
   .table-hover>tbody>tr.overCap:hover>td {
     background-color: #FFCC00;
   }
+
+  #scrollable-dropdown-menu .tt-dropdown-menu {
+    max-height: 150px;
+    overflow-y: auto;
+  }
   </style>
 
 </head>
@@ -80,7 +86,9 @@
     <div id="loaded" style="display: none;">
       <div class="row">
         <div class="col-md-4">
-          <label>Team:</label>
+          <div class="text-centered">
+          <h4>Team Salary Distribution</h4>
+          </div>
           <div class="dropdown" id="teamDropdown">
             <button class="btn btn-xs btn-default dropdown-toggle" type="button" data-toggle="dropdown">
               <span id="btn-text">Dropdown</span>
@@ -121,11 +129,14 @@
 
             <form class="form-inline" id="tradeForm">
               <div class="form-group">
-                <input type="text" class="form-control input-sm" id="tradedPlayer" placeholder="Trade Player">
+                <select class="form-control input-sm" id="tradedPlayer">
+                </select>
               </div>
               <span>  &nbsp;  --------&gt;  &nbsp;  </span>
               <div class="form-group">
-                <input type="text" class="form-control input-sm" id="receivedPlayer" placeholder="Player">
+                <div id="scrollable-dropdown-menu">
+                  <input type="text" class="form-control input-sm typeahead" id="receivedPlayer" placeholder="Player">
+                </div>
               </div>
 
               <button type="submit" class="btn btn-sm btn-default">Trade</button>

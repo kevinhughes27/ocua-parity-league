@@ -35,7 +35,7 @@ var pieChart = d3.select(".pie-chart")
  * Bar Chart Config
  */
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = 960 - margin.left - margin.right,
+    width = 1100 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
 var x = d3.scale.ordinal()
@@ -159,16 +159,66 @@ $('#tradeForm').on('submit', function(event){
   event.preventDefault();
 });
 
+/*
+ * typeahead.js matcher
+ */
+var playerNameMatcher = function(){
+  return function findMatches(q, cb) {
+    var matches, substrRegex;
+
+    // an array that will be populated with substring matches
+    matches = [];
+
+    // regex used to determine if a string contains the substring `q`
+    substrRegex = new RegExp(q, 'i');
+
+    // iterate through the pool of strings and for any string that
+    // contains the substring `q`, add it to the `matches` array
+    playersNames = _.pluck(otherPlayers, 'playersname');
+    $.each(playersNames, function(i, str) {
+      if (substrRegex.test(str)) {
+        // the typeahead jQuery plugin expects suggestions to a
+        // JavaScript object, refer to typeahead docs for more info
+        matches.push({ value: str });
+      }
+    });
+
+    cb(matches);
+  };
+}
+
+$('input.typeahead').typeahead({
+  hint: true,
+  highlight: true,
+  minLength: 1
+},
+{
+  name: 'players',
+  displayKey: 'value',
+  source: playerNameMatcher()
+});
+
 function reRenderForTeam(teamName){
   $('#teamDropdown #btn-text').text(teamName);
 
   teamPlayers = playersFromTeam(teamName);
   teamPlayers = sortPlayersBySalary(teamPlayers);
 
+  renderTradeDropdown(teamPlayers);
+
   otherPlayers = playersNotFromTeam(teamName);
 
   graphTeamSalary(teamPlayers);
   renderPlayerTable(teamPlayers);
+}
+
+function renderTradeDropdown(players){
+  var node = $('select#tradedPlayer');
+  $(node).empty();
+  players.forEach(function(player){
+    opt = "<option>" + player.playersname + "</option>"
+    node.append(opt);
+  });
 }
 
 function renderPlayerTable(players){
@@ -212,11 +262,14 @@ function renderTrades(trades){
     html = "\
       <div class='form-inline'>\
         <div class='form-group'>\
-          <input type='text' class='form-control input-sm' id='tradedPlayer' disabled='true' value='" + trade.tradedPlayer.playersname + "'>\
+          <select class='form-control input-sm' disabled='true'>\
+            <option>" + trade.tradedPlayer.playersname + "</option>\
+            <option>" + _.max(teamPlayers, function(player){ return player.playersname.length }).playersname + "</option>\
+          </select>\
         </div>\
         <span>  &nbsp;  --------&gt;  &nbsp;  </span>\
         <div class='form-group'>\
-          <input type='text' class='form-control input-sm' id='receivedPlayer' disabled='true' value='" + trade.receivedPlayer.playersname + "'>\
+          <input type='text' class='form-control input-sm' disabled='true' value='" + trade.receivedPlayer.playersname + "'>\
         </div>\
         " + (index == trades.length-1 ? undo : '') + "\
       </div>\
@@ -306,12 +359,17 @@ function graphTeams(){
     chart.append("g")
         .attr("class", "y axis")
         .call(yAxis)
-      .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", ".71em")
-        .style("text-anchor", "end")
-        .text("Salary");
+
+    // salary cap line
+    chart.append("svg:line")
+      .attr("x1", 0)
+      .attr("x2", width-20)
+      .attr("y1", y(salaryCap))
+      .attr("y2", y(salaryCap))
+      .style("stroke", "#000")
+      .style("fill", "none")
+      .style("stroke-width", 1)
+      .style("shape-rendering", "crispEdges");
 
     var team = chart.selectAll(".team")
         .data(data)
@@ -322,8 +380,8 @@ function graphTeams(){
     team.selectAll("rect")
         .data(function(d) { return d.salaries; })
       .enter().append("rect")
-        .attr("transform", function(d){ return "translate(" + x.rangeBand()*0.2 + ",0)"; })
-        .attr("width", x.rangeBand()*0.6)
+        .attr("transform", function(d){ return "translate(" + x.rangeBand()*0.25 + ",0)"; })
+        .attr("width", x.rangeBand()*0.5)
         .attr("class", function(d) {
           if(d.y1 > salaryCap){
             return "yellow";
