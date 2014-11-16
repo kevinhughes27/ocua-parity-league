@@ -1,6 +1,6 @@
 window.onload = function() { load() };
 
-var ocua_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1IWfE1OPS7yT9teBp80gcAOJ67CTUiocwB0kfTRa9iDI/pubhtml?gid=1421681096&single=true'
+var ocua_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1dxxBgpZ_T5QdLxb6OvY9pH2xuUyNpM8yr5ncUjiGHqQ/pubhtml'
 var spreadsheetData; // global var where the spreadsheet data will be stored after it is fetched
 var playerNames; // global var containing all the player names for autocomplete
 
@@ -39,28 +39,64 @@ var chart = d3.select(".chart")
 function load(){
   Tabletop.init({ key: ocua_spreadsheet_url,
                   callback: init,
-                  simpleSheet: true })
+                  simpleSheet: false })
 }
 
 
 function init(data, tabletop){
   // set global vars
   spreadsheetData = data;
-  playerNames = _.pluck(spreadsheetData, 'playersname');
+  lastWeek = _.last(_.keys(spreadsheetData));
+
+  playerNames = _.pluck(spreadsheetData[lastWeek].elements, 'playersname');
 
   // toggle loading state
   $("div#app > div#loading").hide();
   $("div#app > div#loaded").show();
 
+  initDataDropdown();
+  reRender(lastWeek);
+}
+
+
+function initDataDropdown(){
+  dataSetNames = _.keys(spreadsheetData)
+
+  var node = $('#dataDropdown > ul.dropdown-menu ');
+  dataSetNames.forEach(function(name){
+    li = "\
+      <li>\
+        <a href='#'>\
+        " + name + "\
+        </a>\
+      </li>\
+    ";
+    node.append(li);
+  });
+
+  /*
+   * Data Set Changed Handler
+   */
+  $("#dataDropdown li a").click(function(event){
+    setName = $(event.target).text().trim();
+    reRender(setName);
+    event.preventDefault();
+  });
+}
+
+function reRender(setName){
+  // update dropdown text
+  $('#dataDropdown #btn-text').text(setName);
+
   // grab the first 2 players
   var playerA = {
-    name: spreadsheetData[0].playersname,
-    stats: transformPlayerData(spreadsheetData[0])
+    name: spreadsheetData[setName].elements[0].playersname,
+    stats: transformPlayerData(spreadsheetData[setName].elements[0])
   };
 
   var playerB = {
-    name: spreadsheetData[1].playersname,
-    stats: transformPlayerData(spreadsheetData[1])
+    name: spreadsheetData[setName].elements[1].playersname,
+    stats: transformPlayerData(spreadsheetData[setName].elements[1])
   };
 
   // graph and set the input state
@@ -68,7 +104,6 @@ function init(data, tabletop){
   $('input#playerA').typeahead('val', playerA.name);
   $('input#playerB').typeahead('val', playerB.name);
 }
-
 
 /*
  * typeahead.js matcher
@@ -126,12 +161,14 @@ $("input.typeahead").on("blur", function(event){
 
 
 function updateGraphEvent(event) {
+  var setName = $('#dataDropdown #btn-text').text();
+
   var playerAName = $("input#playerA").val();
-  var playerAData = _.find(spreadsheetData, function(player){ return player.playersname == playerAName});
+  var playerAData = _.find(spreadsheetData[setName].elements, function(player){ return player.playersname == playerAName});
 
 
   var playerBName = $("input#playerB").val();
-  var playerBData = _.find(spreadsheetData, function(player){ return player.playersname == playerBName});
+  var playerBData = _.find(spreadsheetData[setName].elements, function(player){ return player.playersname == playerBName});
 
   if(playerAData && playerBData){
     playerA = {
@@ -144,7 +181,7 @@ function updateGraphEvent(event) {
       stats: transformPlayerData(playerBData)
     }
 
-    updateGraph(playerA, playerB);
+    graphPlayers(playerA, playerB);
   }
 }
 
@@ -220,6 +257,14 @@ function untransformPlayerData(d){
 
 
 function graphPlayers(playerA, playerB){
+  if(chart.selectAll('*') == 0) {
+    _initGraphPlayers(playerA, playerB)
+  } else {
+    _updateGraphPlayers(playerA, playerB)
+  }
+}
+
+function _initGraphPlayers(playerA, playerB){
   // assemble data
   data = []
   for (i = 0; i < playerA.stats.length; i++) {
@@ -282,7 +327,7 @@ function graphPlayers(playerA, playerB){
 }
 
 
-function updateGraph(playerA, playerB){
+function _updateGraphPlayers(playerA, playerB){
   // assemble data
   data = []
   for (i = 0; i < playerA.stats.length; i++) {
