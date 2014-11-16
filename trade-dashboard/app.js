@@ -6,6 +6,8 @@ var teamNames; // globabl var containing all team names
 
 var salaryCap = 7692003; // W3
 
+var trades = [];
+
 /**
  * Pie Chart Config
  */
@@ -108,13 +110,35 @@ function initTeamDropdown(teamNames){
     node.append(li);
   });
 
-  // team changed handler
+  /*
+   * Team Changed Handler
+   */
   $("#teamDropdown li a").click(function(event){
     teamName = $(event.target).text().trim();
     reRenderForTeam(teamName);
     event.preventDefault();
   });
 }
+
+/*
+ * Trade Handler
+ */
+$('#tradeForm').on('submit', function(event){
+  node = $(event.target)
+
+  var tradedPlayer = node.find('#tradedPlayer').val()
+  var receivedPlayer = node.find('#receivedPlayer').val();
+
+  if(tradedPlayer && receivedPlayer) {
+    trades.push({tradedPlayer: tradedPlayer, receivedPlayer: receivedPlayer});
+    renderTrades(trades);
+    event.target.reset();
+  } else {
+    alert("Invalid Trade!");
+  }
+
+  event.preventDefault();
+});
 
 function reRenderForTeam(teamName){
   $('#teamDropdown #btn-text').text(teamName);
@@ -123,10 +147,10 @@ function reRenderForTeam(teamName){
   players = sortPlayersBySalary(players);
 
   graphTeamSalary(players);
-  drawPlayerTable(players);
+  renderPlayerTable(players);
 }
 
-function drawPlayerTable(players){
+function renderPlayerTable(players){
   var node = $('#players-table > tbody');
 
   // clear data in the table
@@ -141,6 +165,39 @@ function drawPlayerTable(players){
     </tr>\
     ";
     node.append(tr);
+  });
+}
+
+function renderTrades(trades){
+  var node = $('#trades');
+
+  // clear old data
+  $(node).empty();
+
+  trades.forEach(function(trade, index){
+    undo = "<button class='btn btn-sm btn-default' id='undoTrade'>Undo</button>"
+    html = "\
+      <div class='form-inline'>\
+        <div class='form-group'>\
+          <input type='text' class='form-control input-sm' id='tradedPlayer' disabled='true' value='" + trade.tradedPlayer + "'>\
+        </div>\
+        <span>  &nbsp;  --------&gt;  &nbsp;  </span>\
+        <div class='form-group'>\
+          <input type='text' class='form-control input-sm' id='receivedPlayer' disabled='true' value='" + trade.receivedPlayer + "'>\
+        </div>\
+        " + (index == trades.length-1 ? undo : '') + "\
+      </div>\
+      <br>\
+    ";
+    node.append(html);
+  });
+
+  /*
+   * Undo Trade Handler
+   */
+  $('#undoTrade').click(function(event){
+    trades.pop();
+    renderTrades(trades);
   });
 }
 
