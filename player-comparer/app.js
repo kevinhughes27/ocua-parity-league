@@ -44,18 +44,18 @@ function load(){
 
 
 function init(data, tabletop){
-  // set global vars
   spreadsheetData = data;
-  lastWeek = _.last(_.keys(spreadsheetData));
 
-  playerNames = _.pluck(spreadsheetData[lastWeek].elements, 'playersname');
+  setName = getURLParameter('set') || _.last(_.keys(spreadsheetData));
+
+  playerNames = _.pluck(spreadsheetData[setName].elements, 'playersname');
 
   // toggle loading state
   $("div#app > div#loading").hide();
   $("div#app > div#loaded").show();
 
   initDataDropdown();
-  reRender(lastWeek);
+  reRender(setName);
 }
 
 
@@ -88,21 +88,33 @@ function reRender(setName){
   // update dropdown text
   $('#dataDropdown #btn-text').text(setName);
 
-  // grab the first 2 players
+  // get url params if any
+  playerAName = getURLParameter('playerA') || 'Male Average';
+  playerBName = getURLParameter('playerB') || 'Female Average';
+
+  // get the players
+  var playerAData = _.find(spreadsheetData[setName].elements, function(player){ return player.playersname == playerAName});
+  var playerBData = _.find(spreadsheetData[setName].elements, function(player){ return player.playersname == playerBName});
+
   var playerA = {
-    name: spreadsheetData[setName].elements[0].playersname,
-    stats: transformPlayerData(spreadsheetData[setName].elements[0])
+    name: playerAData.playersname,
+    stats: transformPlayerData(playerAData)
   };
 
   var playerB = {
-    name: spreadsheetData[setName].elements[1].playersname,
-    stats: transformPlayerData(spreadsheetData[setName].elements[1])
+    name: playerBData.playersname,
+    stats: transformPlayerData(playerBData)
   };
 
   // graph and set the input state
   graphPlayers(playerA, playerB);
+  appPushState(setName, playerA, playerB);
   $('input#playerA').typeahead('val', playerA.name);
   $('input#playerB').typeahead('val', playerB.name);
+}
+
+function getURLParameter(name) {
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
 }
 
 /*
@@ -181,8 +193,20 @@ function updateGraphEvent(event) {
       stats: transformPlayerData(playerBData)
     }
 
+    appPushState(setName, playerA, playerB);
     graphPlayers(playerA, playerB);
   }
+}
+
+
+function appPushState(setName, playerA, playerB){
+  url = window.location.protocol
+      + "//"
+      + window.location.host
+      + window.location.pathname
+      + "?set=" + setName + "&playerA=" + playerA.name + "&playerB=" + playerB.name;
+
+  history.pushState(null, '', url);
 }
 
 
