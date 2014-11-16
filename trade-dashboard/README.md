@@ -3,6 +3,8 @@ trade-dashboard
 
 A trading dashboard for the GMs in the OCUA Parity League. The dashboard lets you see the current salary distribution of your team, whether you are over or under cap and lets you make trades and see their affect.
 
+running at: [https://trade-dashboard.5apps.com/](https://trade-dashboard.5apps.com/)
+
 Notes:
 
 * The url needed for the spread sheet is not the same as the sharing one. You need to go to file -> publish to web and use that url.
