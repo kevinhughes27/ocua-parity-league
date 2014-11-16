@@ -303,23 +303,25 @@ function applyTrade(trade){
 }
 
 function graphTeamSalary(players){
-  pieChart.selectAll('*').remove();
-
   data = [];
   players.forEach(function(player, index){
     data.push({ name: player.playersname, pos: index, salary: player.salary});
   });
 
-  var g = pieChart.selectAll(".arc")
-      .data(pie(data))
-    .enter().append("g")
-      .attr("class", "arc");
+  if(pieChart.selectAll('*') == 0) {
 
-  g.append("path")
-      .attr("d", arc)
-      .attr("class", function(d) { return "green-" + d.data.pos; })
+    // plotting for the first time
+    var g = pieChart.selectAll(".arc")
+        .data(pie(data))
+      .enter().append("g")
+        .attr("class", "arc");
 
-  g.append("text")
+    g.append("path")
+        .attr("d", arc)
+        .attr("class", function(d) { return "green-" + d.data.pos; })
+        .each(function(d) { this._current = d; }); // store the initial angles
+
+    g.append("text")
       .attr("transform", function(d) {
         var c = arc.centroid(d),
         x = c[0],
@@ -331,6 +333,42 @@ function graphTeamSalary(players){
       .attr("dy", ".35em")
       .style("text-anchor", "middle")
       .text(function(d) { return d.data.name; });
+
+  } else {
+
+    // updating the plot
+
+    // Store the displayed angles in _current.
+    // Then, interpolate from _current to the new angles.
+    // During the transition, _current is updated in-place by d3.interpolate.
+    function arcTween(a) {
+      var i = d3.interpolate(this._current, a);
+      this._current = i(0);
+      return function(t) {
+        return arc(i(t));
+      };
+    }
+
+    pieChart.selectAll('text')
+      .data(pie(data))
+      .transition()
+        .duration(10)
+        .attr("transform", function(d) {
+          var c = arc.centroid(d),
+          x = c[0],
+          y = c[1],
+          h = Math.sqrt(x*x + y*y);
+          labelr = radius - 60;
+          return "translate(" + (x/h * labelr) +  ',' + (y/h * labelr) +  ")";
+        })
+        .text(function(d) { return d.data.name; });
+
+    pieChart.selectAll("path")
+      .data(pie(data))
+      .transition()
+        .duration(10)
+        .attrTween("d", arcTween);
+  }
 }
 
 function graphTeams(){
