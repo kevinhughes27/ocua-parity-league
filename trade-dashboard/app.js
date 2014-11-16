@@ -149,9 +149,8 @@ $('#tradeForm').on('submit', function(event){
 
   if(tradedPlayer && receivedPlayer) {
     var trade = {tradedPlayer: tradedPlayer, receivedPlayer: receivedPlayer};
-    applyTrade(trade);
     trades.push(trade);
-    renderTrades(trades);
+    applyTrade(trade);
     event.target.reset();
   } else {
     alert("Invalid Trade!");
@@ -233,7 +232,6 @@ function renderTrades(trades){
     trade = trades.pop();
     var revertedTrade = { tradedPlayer: trade.receivedPlayer, receivedPlayer: trade.tradedPlayer };
     applyTrade(revertedTrade);
-    renderTrades(trades);
   });
 }
 
@@ -242,7 +240,9 @@ function applyTrade(trade){
   trade.tradedPlayer.currentteam = trade.receivedPlayer.currentteam;
   trade.receivedPlayer.currentteam = tradingTeam;
 
+  graphTeams();
   reRenderForTeam(tradingTeam);
+  renderTrades(trades);
 }
 
 function graphTeamSalary(players){
@@ -295,38 +295,59 @@ function graphTeams(){
   x.domain(data.map(function(d) { return d.team; }));
   y.domain([0, d3.max(data, function(d) { return d.total; })]);
 
-  chart.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+  if(chart.selectAll('*') == 0) {
 
-  chart.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Salary");
+    // plotting for the first time
+    chart.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
 
-  var state = chart.selectAll(".team")
-      .data(data)
-    .enter().append("g")
-      .attr("class", "g")
-      .attr("transform", function(d) { return "translate(" + x(d.team) + ",0)"; });
+    chart.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Salary");
 
-  state.selectAll("rect")
-      .data(function(d) { return d.salaries; })
-    .enter().append("rect")
-      .attr("transform", function(d){ return "translate(" + x.rangeBand()*0.2 + ",0)"; })
-      .attr("width", x.rangeBand()*0.6)
-      .attr("y", function(d) { return y(d.y1); })
-      .attr("height", function(d) { return y(d.y0) - y(d.y1); })
-      .attr("class", function(d) {
-        if(d.y1 > salaryCap){
-          return "yellow";
-        }
-        return "green-" + d.pos;
-      })
+    var team = chart.selectAll(".team")
+        .data(data)
+      .enter().append("g")
+        .attr("class", "g")
+        .attr("transform", function(d) { return "translate(" + x(d.team) + ",0)"; });
+
+    team.selectAll("rect")
+        .data(function(d) { return d.salaries; })
+      .enter().append("rect")
+        .attr("transform", function(d){ return "translate(" + x.rangeBand()*0.2 + ",0)"; })
+        .attr("width", x.rangeBand()*0.6)
+        .attr("class", function(d) {
+          if(d.y1 > salaryCap){
+            return "yellow";
+          }
+          return "green-" + d.pos;
+        })
+        .attr("y", height)
+        .attr("height", 0)
+      .transition(300)
+        .attr("y", function(d) { return y(d.y1); })
+        .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+
+  } else {
+
+    // updating the plot
+    var flatData = [];
+    data.forEach(function(d){
+      flatData = flatData.concat(d.salaries);
+    })
+
+    chart.selectAll("rect")
+      .data(flatData)
+      .transition(300)
+        .attr("y", function(d) { return y(d.y1); })
+        .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+  }
 }
