@@ -121,11 +121,16 @@ function initTeamDropdown(teamNames){
    */
   $("#teamDropdown li a").click(function(event){
     teamName = $(event.target).text().trim();
-    if (trades.length > 0 && confirm("Changing teams will clear trades") == true) {
-      trades = [];
-      renderTrades(trades);
+    if (trades.length > 0){
+      if(confirm("Changing teams will clear trades") == true) {
+        trades = [];
+        renderTrades(trades);
+        reRenderForTeam(teamName);
+      }
+    } else {
       reRenderForTeam(teamName);
     }
+
     event.preventDefault();
   });
 }
@@ -173,7 +178,9 @@ function renderPlayerTable(players){
   // clear data in the table
   node.find('tr').remove();
 
+  var teamSalary = 0;
   players.reverse().forEach(function(player, index){
+    teamSalary += player.salary
     tr = "\
     <tr>\
       <td>" + (index+1) + "</td>\
@@ -183,6 +190,16 @@ function renderPlayerTable(players){
     ";
     node.append(tr);
   });
+
+  var tr;
+  teamSalaryString = '$ ' + teamSalary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  if(teamSalary < salaryCap){
+    tr = "<tr><td></td> <td>Total:</td><td class='underCap'>" + teamSalaryString + "</td></tr>";
+  } else {
+    tr = "<tr><td></td> <td>Total:</td><td class='overCap'>" + teamSalaryString + "</td></tr>";
+  }
+
+  node.append(tr);
 }
 
 function renderTrades(trades){
