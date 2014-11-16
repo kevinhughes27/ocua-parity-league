@@ -42,12 +42,22 @@
   .green-14{fill: #238B45;}
   .yellow{fill: #FFCC00;}
 
-  td.underCap {
-    color: #238B45;
+  tr.underCap {
+    font-weight: bold;
+    background-color: #238B45;
   }
 
-  td.overCap {
-    color: #FFCC00;
+  .table-hover>tbody>tr.underCap:hover>td {
+    background-color: #238B45;
+  }
+
+  tr.overCap {
+    font-weight: bold;
+    background-color: #FFCC00;
+  }
+
+  .table-hover>tbody>tr.overCap:hover>td {
+    background-color: #FFCC00;
   }
   </style>
 
@@ -96,36 +106,37 @@
           <svg class="pie-chart"></svg>
         </div>
       </div>
-      <hr>
 
-      <div class="row">
-        <div class="col-md-6">
-          <label class="text-left">Trades:</label>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-6 col-sm-offset-1">
-          <div id="trades">
+      <div class="well">
+        <div class="row">
+          <div class="col-md-6">
+            <label class="text-left">Trades:</label>
           </div>
+        </div>
 
-          <form class="form-inline" id="tradeForm">
-            <div class="form-group">
-              <input type="text" class="form-control input-sm" id="tradedPlayer" placeholder="Trade Player">
-            </div>
-            <span>  &nbsp;  --------&gt;  &nbsp;  </span>
-            <div class="form-group">
-              <input type="text" class="form-control input-sm" id="receivedPlayer" placeholder="Player">
+        <div class="row">
+          <div class="col-md-6 col-sm-offset-1">
+            <div id="trades">
             </div>
 
-            <button type="submit" class="btn btn-sm btn-default">Trade</button>
-          </form>
+            <form class="form-inline" id="tradeForm">
+              <div class="form-group">
+                <input type="text" class="form-control input-sm" id="tradedPlayer" placeholder="Trade Player">
+              </div>
+              <span>  &nbsp;  --------&gt;  &nbsp;  </span>
+              <div class="form-group">
+                <input type="text" class="form-control input-sm" id="receivedPlayer" placeholder="Player">
+              </div>
 
+              <button type="submit" class="btn btn-sm btn-default">Trade</button>
+            </form>
+
+          </div>
         </div>
       </div>
-      <hr>
 
       <div class="row text-center">
+        <h4>League Salary Distribution</h4>
         <svg class="chart"></svg>
       </div>
       <hr>

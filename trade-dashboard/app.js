@@ -193,9 +193,9 @@ function renderPlayerTable(players){
   var tr;
   teamSalaryString = '$ ' + teamSalary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   if(teamSalary < salaryCap){
-    tr = "<tr><td></td> <td>Total:</td><td class='underCap'>" + teamSalaryString + "</td></tr>";
+    tr = "<tr class='underCap'><td></td> <td>Total:</td><td>" + teamSalaryString + "</td></tr>";
   } else {
-    tr = "<tr><td></td> <td>Total:</td><td class='overCap'>" + teamSalaryString + "</td></tr>";
+    tr = "<tr class='overCap'><td></td> <td>Total:</td><td>" + teamSalaryString + "</td></tr>";
   }
 
   node.append(tr);
