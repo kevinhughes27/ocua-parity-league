@@ -1,7 +1,7 @@
 trade-dashboard
 ===============
 
-A player stat comparer app written in D3.js
+A trading dashboard for the GMs in the OCUA Parity League. The dashboard lets you see the current salary distribution of your team, whether you are over or under cap and lets you make trades and see their affect.
 
 Notes:
 
