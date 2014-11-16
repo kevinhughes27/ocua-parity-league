@@ -8,7 +8,9 @@ var teamPlayers = []; // global var containing the players of the current team
 var otherPlayers = []; // global var of all the players not on the current team
 var trades = []; // global var holding all the trades
 
-var salaryCap = 7692003; // W3
+// W3
+var salaryCap = 7692003;
+var salaryFloor = 7622839;
 
 /**
  * Pie Chart Config
@@ -428,6 +430,17 @@ function graphTeams(){
       .attr("y1", y(salaryCap))
       .attr("y2", y(salaryCap))
       .style("stroke", "#000")
+      .style("fill", "none")
+      .style("stroke-width", 1)
+      .style("shape-rendering", "crispEdges");
+
+    // salary cap line
+    chart.append("svg:line")
+      .attr("x1", 0)
+      .attr("x2", width-20)
+      .attr("y1", y(salaryFloor))
+      .attr("y2", y(salaryFloor))
+      .style("stroke", "#238B45")
       .style("fill", "none")
       .style("stroke-width", 1)
       .style("shape-rendering", "crispEdges");
