@@ -395,7 +395,7 @@ function graphTeams(){
         .attr("width", x.rangeBand()*0.5)
         .attr("class", function(d) {
           if(d.y1 > salaryCap){
-            return "yellow";
+            return "yellow-11";
           }
           return "green-" + d.pos;
         })
@@ -420,5 +420,11 @@ function graphTeams(){
       .transition(300)
         .attr("y", function(d) { return y(d.y1); })
         .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+        .attr("class", function(d) {
+          if(d.y1 > salaryCap){
+            return "yellow-11";
+          }
+          return "green-" + d.pos;
+        });
   }
 }
