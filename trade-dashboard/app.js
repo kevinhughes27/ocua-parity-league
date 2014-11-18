@@ -1,7 +1,9 @@
 window.onload = function() { load() };
 
-var ocua_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1IWfE1OPS7yT9teBp80gcAOJ67CTUiocwB0kfTRa9iDI/pubhtml?gid=1421681096&single=true'
+var data_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1IWfE1OPS7yT9teBp80gcAOJ67CTUiocwB0kfTRa9iDI/pubhtml?gid=1421681096&single=true'
 var spreadsheetData; // global var where the spreadsheet data will be stored after it is fetched
+
+var trades_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/14MwHXi9xOWTup5mrLuTHZT-X6RGfVbNHRRZhT3uzj2k/pubhtml?gid=1636870674&single=true'
 
 var teamNames; // global var containing all team names
 var teamPlayers = []; // global var containing the players of the current team
@@ -65,16 +67,30 @@ var chart = d3.select(".chart")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 function load(){
-  Tabletop.init({ key: ocua_spreadsheet_url,
-                  callback: init,
+  Tabletop.init({ key: data_spreadsheet_url,
+                  callback: init1,
                   simpleSheet: true })
 }
 
 
-function init(data, tabletop){
+function init1(data, tabletop){
   // set global vars
   spreadsheetData = data;
   transformSalary(); // adds a new field 'salary' that is numeric
+
+  Tabletop.init({ key: trades_spreadsheet_url,
+                  callback: init2,
+                  simpleSheet: true })
+}
+
+function init2(data, tabletop){
+  // perform confirmed trades
+  data.forEach(function(trade){
+    tradedPlayer = _.find(spreadsheetData, function(player){ return player.playersname == trade.name; });
+    if(tradedPlayer){
+      tradedPlayer.currentteam = trade.team;
+    }
+  });
 
   teamNames = _.uniq(_.pluck(spreadsheetData, 'currentteam'));
   teamNames = _.reject(teamNames, function(teamName){ return teamName == 'Substitute' || teamName == '(sub inc)' });
