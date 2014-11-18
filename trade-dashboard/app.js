@@ -195,8 +195,17 @@ $('input#receivedPlayer').on('blur', tradeUpdate);
 function tradeUpdate(event) {
   var tradedPlayerName = $('#tradedPlayer').val();
   var receivedPlayerName = $('#receivedPlayer').val();
+
   url = 'https://player-comparer.5apps.com/?set=' + week + '&playerA=' + tradedPlayerName + '&playerB=' + receivedPlayerName;
   $('a#compare').attr('href', url);
+
+  var tradedPlayer = _.find(teamPlayers, function(player){ return player.playersname == tradedPlayerName; })
+  var receivedPlayer = _.find(otherPlayers, function(player){ return player.playersname == receivedPlayerName; })
+
+  if(tradedPlayer && receivedPlayer) {
+    var trade = {tradedPlayer: tradedPlayer, receivedPlayer: receivedPlayer};
+    graphTeams(trade);
+  }
 }
 
 /*
@@ -409,7 +418,7 @@ function graphTeamSalary(players){
   }
 }
 
-function graphTeams(){
+function graphTeams(trade){
   var data = []
   teamNames.forEach(function(teamName){
     players = playersFromTeam(teamName);
@@ -418,6 +427,10 @@ function graphTeams(){
     var salaries = [];
     var y0 = 0;
     players.forEach(function(player, index){
+      if(trade){ // optionally modify the data with a trade
+        if(player == trade.tradedPlayer){ player = trade.receivedPlayer; }
+        else if(player == trade.receivedPlayer){ player = trade.tradedPlayer; }
+      }
       salaries.push({ name: player.playersname, salary: player.salary, pos: index,
                       y0: y0, y1: y0 += player.salary });
     });
