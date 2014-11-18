@@ -93,7 +93,7 @@ function init2(data, tabletop){
   });
 
   teamNames = _.uniq(_.pluck(spreadsheetData, 'currentteam'));
-  teamNames = _.reject(teamNames, function(teamName){ return teamName == 'Substitute' || teamName == '(sub inc)' });
+  teamNames = _.reject(teamNames, function(teamName){ return teamName == 'Substitute' || teamName == '(sub inc)' || teamName == 'Injury'});
   teamNames = sortTeams(teamNames);
 
   // toggle loading state
