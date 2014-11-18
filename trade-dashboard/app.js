@@ -6,7 +6,7 @@ var spreadsheetData; // global var where the spreadsheet data will be stored aft
 var teamNames; // global var containing all team names
 var teamPlayers = []; // global var containing the players of the current team
 var otherPlayers = []; // global var of all the players not on the current team
-var trades = []; // global var holding all the trades
+var savedTrades = []; // global var holding all the trades
 
 var week = 'W2'
 
@@ -146,10 +146,10 @@ function initTeamDropdown(teamNames){
    */
   $("#teamDropdown li a").click(function(event){
     teamName = $(event.target).text().trim();
-    if (trades.length > 0){
+    if (savedTrades.length > 0){
       if(confirm("Changing teams will clear trades") == true) {
-        trades = [];
-        renderTrades(trades);
+        savedTrades = [];
+        renderTrades(savedTrades);
         reRenderForTeam(teamName);
       }
     } else {
@@ -174,7 +174,7 @@ $('#tradeForm').on('submit', function(event){
 
   if(tradedPlayer && receivedPlayer) {
     var trade = {tradedPlayer: tradedPlayer, receivedPlayer: receivedPlayer};
-    trades.push(trade);
+    savedTrades.push(trade);
     applyTrade(trade);
     event.target.reset();
     _.defer(tradeUpdate);
@@ -299,7 +299,7 @@ function renderTrades(trades){
   // the underscore _.max finds the longest string and puts it in the option
   // this is a hack to keep the size the same
   // it breaks if the player with the longest name is traded.
-  trades.forEach(function(trade, index){
+  savedTrades.forEach(function(trade, index){
     undo = "<button class='btn btn-sm btn-default' id='undoTrade'>Undo</button>"
     html = "\
       <div class='form-inline'>\
@@ -313,7 +313,7 @@ function renderTrades(trades){
         <div class='form-group'>\
           <input type='text' class='form-control input-sm' disabled='true' value='" + trade.receivedPlayer.playersname + "'>\
         </div>\
-        " + (index == trades.length-1 ? undo : '') + "\
+        " + (index == savedTrades.length-1 ? undo : '') + "\
       </div>\
       <br>\
     ";
@@ -324,7 +324,7 @@ function renderTrades(trades){
    * Undo Trade Handler
    */
   $('#undoTrade').click(function(event){
-    trade = trades.pop();
+    trade = savedTrades.pop();
     var revertedTrade = { tradedPlayer: trade.receivedPlayer, receivedPlayer: trade.tradedPlayer };
     applyTrade(revertedTrade);
   });
@@ -337,7 +337,7 @@ function applyTrade(trade){
 
   graphTeams();
   reRenderForTeam(tradingTeam);
-  renderTrades(trades);
+  renderTrades(savedTrades);
 }
 
 function graphTeamSalary(players){
