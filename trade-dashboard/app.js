@@ -3,18 +3,19 @@ window.onload = function() { load() };
 var data_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1IWfE1OPS7yT9teBp80gcAOJ67CTUiocwB0kfTRa9iDI/pubhtml?gid=1421681096&single=true'
 var spreadsheetData; // global var where the spreadsheet data will be stored after it is fetched
 
-var trades_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/14MwHXi9xOWTup5mrLuTHZT-X6RGfVbNHRRZhT3uzj2k/pubhtml?gid=1636870674&single=true'
+var trades_spreadsheet_url;
+//trades_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/14MwHXi9xOWTup5mrLuTHZT-X6RGfVbNHRRZhT3uzj2k/pubhtml?gid=1636870674&single=true'
 
 var teamNames; // global var containing all team names
 var teamPlayers = []; // global var containing the players of the current team
 var otherPlayers = []; // global var of all the players not on the current team
 var savedTrades = []; // global var holding all the trades
 
-var week = 'W2'
+var week = 'W3'
 
-// for W3
-var salaryCap = 7692003;
-var salaryFloor = 7622839;
+// for W4
+var salaryCap = 7670266;
+var salaryFloor = 7601543;
 
 /**
  * Pie Chart Config
@@ -68,22 +69,27 @@ var chart = d3.select(".chart")
 
 function load(){
   Tabletop.init({ key: data_spreadsheet_url,
-                  callback: init1,
+                  callback: initData,
                   simpleSheet: true })
 }
 
 
-function init1(data, tabletop){
+function initData(data, tabletop){
   // set global vars
   spreadsheetData = data;
   transformSalary(); // adds a new field 'salary' that is numeric
 
-  Tabletop.init({ key: trades_spreadsheet_url,
-                  callback: init2,
-                  simpleSheet: true })
+  // init trades if present
+  if(trades_spreadsheet_url){
+    Tabletop.init({ key: trades_spreadsheet_url,
+                    callback: initTrades,
+                    simpleSheet: true })
+  } else {
+    init();
+  }
 }
 
-function init2(data, tabletop){
+function initTrades(data, tabletop){
   // perform confirmed trades
   data.forEach(function(trade){
     tradedPlayer = _.find(spreadsheetData, function(player){ return player.playersname == trade.name; });
@@ -92,6 +98,10 @@ function init2(data, tabletop){
     }
   });
 
+  init();
+}
+
+function init(){
   teamNames = _.uniq(_.pluck(spreadsheetData, 'currentteam'));
   teamNames = _.reject(teamNames, function(teamName){ return teamName == 'Substitute' || teamName == '(sub inc)' || teamName == 'Injury'});
   teamNames = sortTeams(teamNames);
