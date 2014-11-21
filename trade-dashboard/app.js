@@ -14,8 +14,8 @@ var savedTrades = []; // global var holding all the trades
 var week = 'W3'
 
 // for W4
-var salaryCap = 7670266;
-var salaryFloor = 7601543;
+var salaryCap = 7691755;
+var salaryFloor = 7622839;
 
 /**
  * Pie Chart Config
