@@ -7,7 +7,9 @@ class DocGenerator
     @url = opts.url
     @type = opts.type || 'GET'
 
-  generate: ->
+  generate: (callback) ->
+    @callback = callback
+
     @call = """
       $.ajax({
         url: #{@url},
@@ -19,6 +21,8 @@ class DocGenerator
       })
     """
 
+    #@_apiCallSuccess({})
+
     operation = $.ajax
       url: @url
       type: @type
@@ -26,15 +30,9 @@ class DocGenerator
       success: @_apiCallSuccess
 
   _apiCallSuccess: (response) =>
-    @_toggleLoading()
     @response = JSON.stringify(response, undefined, 2)
     @_renderDoc()
-
-  _toggleLoading: ->
-    return if @loaded
-    @loaded = true
-    $("div#app > div#loading").hide()
-    $("div#app > div#loaded").show()
+    @callback()
 
   _renderDoc: ->
     template = _.template(TEMPLATES.api_call_doc_template)

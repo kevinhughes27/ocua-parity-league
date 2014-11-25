@@ -15,8 +15,11 @@
       <hr>
     </div>
 
-    <div id="loading" class="row text-center">
-      <img src="assets/loading1.gif">
+    <div id="loading" class="row">
+      <h4>Loading ...</h4>
+      <div id="progress" class="progress" style="height: 40px;">
+        <div class="progress-bar progress-info progress-bar-striped active" style="width: 0%;"></div>
+      </div>
     </div>
 
     <div id="loaded" style="display: none;">
@@ -31,27 +34,59 @@
   <script src="doc-generator.js"></script>
 
   <script>
-    // Thanks to async these may not appear in order
+    function Progressbar(container){
+      this.state = 0,
+      this.max = 100,
+      this.bar = $("#"+container+" .progress-bar"),
+      this.container = $("#"+container),
+      this.start = function(max){
+        this.max = max*1.0;
+        this.container.slideDown();
+        this.bar.css("width","0%");
+      }
+      this.tick = function(step){
+        this.state += step*1.0;
+        curr = this.state / this.max;
+        this.bar.css("width",curr*100+"%");
+        if(this.state > 99){ this.finish(); }
+      }
+      this.finish = function(){
+        this.container.slideUp();
+        $("div#app > div#loaded").show()
+      }
+    }
+  </script>
+
+  <script>
+    var pbar = new Progressbar("loading");
+    pbar.start(100);
+
     new DocGenerator({
       title: 'Stats',
       desc: 'Returns the stats for the week by player',
       params: ["resource = 'Stats' (required)", "weeknumber = number (optional)"],
       url: 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Stats&weeknumber=1'
-    }).generate();
+    }).generate(function(){
+      pbar.tick(33.33);
+    });
 
     new DocGenerator({
       title: 'Salaries',
       desc: 'Returns the salary cap and floor for the week along with every teams current salary total',
       params: ["resource = 'Salaries' (required)", "weeknumber = number (optional)"],
       url: 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Salaries&weeknumber=1'
-    }).generate();
+    }).generate(function(){
+      pbar.tick(33.33);
+    });
 
     new DocGenerator({
       title: 'Trades',
       desc: 'Returns the list of trades made that week',
       params: ["resource = 'Trades' (required)", "weeknumber = number (optional)"],
       url: 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Trades&weeknumber=1'
-    }).generate();
+    }).generate(function(){
+      pbar.tick(33.33);
+    });
   </script>
 
 </body>

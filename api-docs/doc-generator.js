@@ -15,8 +15,9 @@ DocGenerator = (function() {
     this.type = opts.type || 'GET';
   }
 
-  DocGenerator.prototype.generate = function() {
+  DocGenerator.prototype.generate = function(callback) {
     var operation;
+    this.callback = callback;
     this.call = "$.ajax({\n  url: " + this.url + ",\n  type: " + this.type + ",\n  dataType: 'jsonp',\n  success: function(data) {\n    // code here\n  }\n})";
     return operation = $.ajax({
       url: this.url,
@@ -27,18 +28,9 @@ DocGenerator = (function() {
   };
 
   DocGenerator.prototype._apiCallSuccess = function(response) {
-    this._toggleLoading();
     this.response = JSON.stringify(response, void 0, 2);
-    return this._renderDoc();
-  };
-
-  DocGenerator.prototype._toggleLoading = function() {
-    if (this.loaded) {
-      return;
-    }
-    this.loaded = true;
-    $("div#app > div#loading").hide();
-    return $("div#app > div#loaded").show();
+    this._renderDoc();
+    return this.callback();
   };
 
   DocGenerator.prototype._renderDoc = function() {
