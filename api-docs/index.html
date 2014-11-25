@@ -12,7 +12,6 @@
   <div id="app" class="container">
     <div class="row text-center">
       <h1>OCUA Parity League API Docs</h1>
-      <p>by Kevin Hughes</p>
       <hr>
     </div>
 
@@ -35,21 +34,21 @@
     // Thanks to async these may not appear in order
     new DocGenerator({
       title: 'Stats',
-      desc: 'Stats API',
+      desc: 'Returns the stats for the week by player',
       params: ["resource = 'Stats' (required)", "weeknumber = number (optional)"],
       url: 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Stats&weeknumber=1'
     }).generate();
 
     new DocGenerator({
       title: 'Salaries',
-      desc: 'Salaries API',
+      desc: 'Returns the salary cap and floor for the week along with every teams current salary total',
       params: ["resource = 'Salaries' (required)", "weeknumber = number (optional)"],
       url: 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Salaries&weeknumber=1'
     }).generate();
 
     new DocGenerator({
       title: 'Trades',
-      desc: 'Trades API',
+      desc: 'Returns the list of trades made that week',
       params: ["resource = 'Trades' (required)", "weeknumber = number (optional)"],
       url: 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Trades&weeknumber=1'
     }).generate();
