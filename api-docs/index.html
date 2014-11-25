@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>OCUA Parity League API Docs</title>
+  <link href="assets/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <a href="https://github.com/pickle27/ocua-parity-league"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/c6286ade715e9bea433b4705870de482a654f78a/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_white_ffffff.png"></a>
+
+  <div id="app" class="container">
+    <div class="row text-center">
+      <h1>OCUA Parity League API Docs</h1>
+      <p>by Kevin Hughes</p>
+      <hr>
+    </div>
+
+    <div id="loading" class="row text-center">
+      <img src="assets/loading1.gif">
+    </div>
+
+    <div id="loaded" style="display: none;">
+      <h3>Endpoints</h3>
+      <div class="row" id="main"></div>
+    </div>
+  </div>
+
+  <script src="vendor/jquery-2.1.1.min.js"></script>
+  <script src="vendor/underscore.min.js"></script>
+  <script src="vendor/bootstrap.min.js"></script>
+  <script src="doc-generator.js"></script>
+
+  <script>
+    // Thanks to async these may not appear in order
+    new DocGenerator({
+      title: 'Stats',
+      desc: 'Stats API',
+      params: ["resource = 'Stats' (required)", "weeknumber = number (optional)"],
+      url: 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Stats&weeknumber=1'
+    }).generate();
+
+    new DocGenerator({
+      title: 'Salaries',
+      desc: 'Salaries API',
+      params: ["resource = 'Salaries' (required)", "weeknumber = number (optional)"],
+      url: 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Salaries&weeknumber=1'
+    }).generate();
+
+    new DocGenerator({
+      title: 'Trades',
+      desc: 'Trades API',
+      params: ["resource = 'Trades' (required)", "weeknumber = number (optional)"],
+      url: 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Trades&weeknumber=1'
+    }).generate();
+  </script>
+
+</body>
+</html>
