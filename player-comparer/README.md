@@ -6,6 +6,10 @@ A player stat comparer app written in D3.js
 running at:
 [https://player-comparer.5apps.com/](https://player-comparer.5apps.com/)
 
+Screenshot
+----------
+![screenshot](https://raw.githubusercontent.com/pickle27/ocua-parity-league/master/player-comparer/screenshot.png)
+
 Notes:
 
 * The url needed for the spread sheet is not the same as the sharing one. You need to go to file -> publish to web and use that url.
