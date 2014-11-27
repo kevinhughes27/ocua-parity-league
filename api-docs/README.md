@@ -9,6 +9,3 @@ running at:
 Screenshot
 ----------
 ![screenshot](https://raw.githubusercontent.com/pickle27/ocua-parity-league/master/api-docs/screenshot.png)
-
-A little coffeescript class that does an Api call and then appends documentation for it to the DOM.
-
