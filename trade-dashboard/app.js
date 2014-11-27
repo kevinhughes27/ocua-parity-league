@@ -1,21 +1,21 @@
 window.onload = function() { load() };
 
-var data_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1IWfE1OPS7yT9teBp80gcAOJ67CTUiocwB0kfTRa9iDI/pubhtml?gid=1421681096&single=true'
-var spreadsheetData; // global var where the spreadsheet data will be stored after it is fetched
+var weeknumber = 4
+var week = 'W'+weeknumber
 
-var trades_spreadsheet_url;
-//trades_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/14MwHXi9xOWTup5mrLuTHZT-X6RGfVbNHRRZhT3uzj2k/pubhtml?gid=1636870674&single=true'
+var stats_url  = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Stats&weeknumber='+weeknumber
+var salary_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Salaries&weeknumber='+weeknumber
+var trades_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Trades&weeknumber='+weeknumber
+
+// Globals
+var statsData;
+var salaryCap;
+var salaryFloor;
 
 var teamNames; // global var containing all team names
 var teamPlayers = []; // global var containing the players of the current team
 var otherPlayers = []; // global var of all the players not on the current team
 var savedTrades = []; // global var holding all the trades
-
-var week = 'W3'
-
-// for W4
-var salaryCap = 7691755;
-var salaryFloor = 7622839;
 
 /**
  * Pie Chart Config
@@ -67,42 +67,87 @@ var chart = d3.select(".chart")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+
+/*
+ * kicks off the loading steps, a bunch of data is fetched and initialized.
+ * these calls are chained so that one happens after the other
+ */
 function load(){
-  Tabletop.init({ key: data_spreadsheet_url,
-                  callback: initData,
-                  simpleSheet: true })
+  fetchStats();
 }
 
-
-function initData(data, tabletop){
-  // set global vars
-  spreadsheetData = data;
-  transformSalary(); // adds a new field 'salary' that is numeric
-
-  // init trades if present
-  if(trades_spreadsheet_url){
-    Tabletop.init({ key: trades_spreadsheet_url,
-                    callback: initTrades,
-                    simpleSheet: true })
-  } else {
-    init();
-  }
+function fetchStats(){
+  $.ajax({
+    url: stats_url,
+    type: 'GET',
+    dataType: 'jsonp',
+    success: function(data){
+      initStats(data);
+    }
+  });
 }
 
+function initStats(data){
+  statsData = data.slice(1);
+  transformData();
+  fetchSalaries();
+}
+
+function transformData(){
+  var nameIndex = 0;
+  var teamNameIndex = 2;
+  var salaryIndex = 21;
+
+  statsData.forEach(function(player){
+    player.name = player[nameIndex];
+    player.team =player[teamNameIndex];
+    player.salary = player[salaryIndex];
+  });
+}
+
+function fetchSalaries(){
+  $.ajax({
+    url: salary_url,
+    type: 'GET',
+    dataType: 'jsonp',
+    success: function(data) {
+      initSalaries(data);
+    }
+  })
+}
+
+function initSalaries(data){
+  salaryCap = data[2][1];
+  salaryFloor = data[2][2];
+  $('#data-version')[0].innerHTML = 'Data Version: Week'+weeknumber
+  fetchTrades();
+}
+
+function fetchTrades(){
+  $.ajax({
+    url: trades_url,
+    type: 'GET',
+    dataType: 'jsonp',
+    success: function(data) {
+      initTrades(data);
+    }
+  });
+}
+
+// perform confirmed trades
 function initTrades(data, tabletop){
-  // perform confirmed trades
   data.forEach(function(trade){
-    tradedPlayer = _.find(spreadsheetData, function(player){ return player.playersname == trade.name; });
+    tradedPlayer = _.find(statsData, function(player){ return player.name == trade.name; });
     if(tradedPlayer){
-      tradedPlayer.currentteam = trade.team;
+      tradedPlayer.team = trade.team;
     }
   });
 
-  init();
+  initApp();
 }
 
-function init(){
-  teamNames = _.uniq(_.pluck(spreadsheetData, 'currentteam'));
+function initApp(){
+  teamNames = _.uniq(_.pluck(statsData, 'team'));
   teamNames = _.reject(teamNames, function(teamName){ return teamName == 'Substitute' || teamName == '(sub inc)' || teamName == 'Injury'});
   teamNames = sortTeams(teamNames);
 
@@ -114,12 +159,6 @@ function init(){
   reRenderForTeam(teamNames[0]);
 
   graphTeams();
-}
-
-function transformSalary(){
-  spreadsheetData.forEach(function(player){
-    player.salary = +player.nextweekssalary.replace(/\D/g,'');
-  });
 }
 
 /*
@@ -138,12 +177,12 @@ function sortTeams(teamNames){
 }
 
 function playersFromTeam(teamName){
-  return _.where(spreadsheetData, {currentteam: teamName});
+  return _.where(statsData, {team: teamName});
 }
 
 function playersNotFromTeam(teamName){
   otherTeams = _.reject(teamNames, function(name){ return name == teamName});
-  return _.filter(spreadsheetData, function(player){ return _.contains(otherTeams, player.currentteam); });
+  return _.filter(statsData, function(player){ return _.contains(otherTeams, player.team); });
 }
 
 function sortPlayersBySalary(players){
@@ -195,8 +234,8 @@ $('#tradeForm').on('submit', function(event){
   var tradedPlayerName = node.find('#tradedPlayer').val();
   var receivedPlayerName = node.find('#receivedPlayer').val();
 
-  var tradedPlayer = _.find(teamPlayers, function(player){ return player.playersname == tradedPlayerName; })
-  var receivedPlayer = _.find(otherPlayers, function(player){ return player.playersname == receivedPlayerName; })
+  var tradedPlayer = _.find(teamPlayers, function(player){ return player.name == tradedPlayerName; })
+  var receivedPlayer = _.find(otherPlayers, function(player){ return player.name == receivedPlayerName; })
 
   if(tradedPlayer && receivedPlayer) {
     var trade = {tradedPlayer: tradedPlayer, receivedPlayer: receivedPlayer};
@@ -225,8 +264,8 @@ function tradeUpdate(event) {
   url = 'https://player-comparer.5apps.com/?set=' + week + '&playerA=' + tradedPlayerName + '&playerB=' + receivedPlayerName;
   $('a#compare').attr('href', url);
 
-  var tradedPlayer = _.find(teamPlayers, function(player){ return player.playersname == tradedPlayerName; })
-  var receivedPlayer = _.find(otherPlayers, function(player){ return player.playersname == receivedPlayerName; })
+  var tradedPlayer = _.find(teamPlayers, function(player){ return player.name == tradedPlayerName; })
+  var receivedPlayer = _.find(otherPlayers, function(player){ return player.name == receivedPlayerName; })
 
   if(tradedPlayer && receivedPlayer) {
     var trade = {tradedPlayer: tradedPlayer, receivedPlayer: receivedPlayer};
@@ -249,8 +288,8 @@ var playerNameMatcher = function(){
 
     // iterate through the pool of strings and for any string that
     // contains the substring `q`, add it to the `matches` array
-    playersNames = _.pluck(otherPlayers, 'playersname');
-    $.each(playersNames, function(i, str) {
+    names = _.pluck(otherPlayers, 'name');
+    $.each(names, function(i, str) {
       if (substrRegex.test(str)) {
         // the typeahead jQuery plugin expects suggestions to a
         // JavaScript object, refer to typeahead docs for more info
@@ -291,7 +330,7 @@ function renderTradeDropdown(players){
   var node = $('select#tradedPlayer');
   $(node).empty();
   players.forEach(function(player){
-    opt = "<option>" + player.playersname + "</option>"
+    opt = "<option>" + player.name + "</option>"
     node.append(opt);
   });
 }
@@ -308,8 +347,8 @@ function renderPlayerTable(players){
     tr = "\
     <tr>\
       <td>" + (index+1) + "</td>\
-      <td>" + player.playersname + "</td>\
-      <td>" + player.nextweekssalary + "</td>\
+      <td>" + player.name + "</td>\
+      <td>" + salaryString(player.salary) + "</td>\
     </tr>\
     ";
     node.append(tr);
@@ -340,13 +379,13 @@ function renderTrades(trades){
       <div class='form-inline'>\
         <div class='form-group'>\
           <select class='form-control input-sm' disabled='true'>\
-            <option>" + trade.tradedPlayer.playersname + "</option>\
-            <option>" + _.max(teamPlayers, function(player){ return player.playersname.length }).playersname + "</option>\
+            <option>" + trade.tradedPlayer.name + "</option>\
+            <option>" + _.max(teamPlayers, function(player){ return player.name.length }).name + "</option>\
           </select>\
         </div>\
         <span>  &nbsp;  --------&gt;  &nbsp;  </span>\
         <div class='form-group'>\
-          <input type='text' class='form-control input-sm' disabled='true' value='" + trade.receivedPlayer.playersname + "'>\
+          <input type='text' class='form-control input-sm' disabled='true' value='" + trade.receivedPlayer.name + "'>\
         </div>\
         " + (index == savedTrades.length-1 ? undo : '') + "\
       </div>\
@@ -366,9 +405,9 @@ function renderTrades(trades){
 }
 
 function applyTrade(trade){
-  tradingTeam = trade.tradedPlayer.currentteam;
-  trade.tradedPlayer.currentteam = trade.receivedPlayer.currentteam;
-  trade.receivedPlayer.currentteam = tradingTeam;
+  tradingTeam = trade.tradedPlayer.team;
+  trade.tradedPlayer.team = trade.receivedPlayer.team;
+  trade.receivedPlayer.team = tradingTeam;
 
   graphTeams();
   reRenderForTeam(tradingTeam);
@@ -378,7 +417,7 @@ function applyTrade(trade){
 function graphTeamSalary(players){
   data = [];
   players.forEach(function(player, index){
-    data.push({ name: player.playersname, pos: index, salary: player.salary});
+    data.push({ name: player.name, pos: index, salary: player.salary});
   });
 
   if(pieChart.selectAll('*') == 0) {
@@ -457,7 +496,7 @@ function graphTeams(trade){
         if(player == trade.tradedPlayer){ player = trade.receivedPlayer; }
         else if(player == trade.receivedPlayer){ player = trade.tradedPlayer; }
       }
-      salaries.push({ name: player.playersname, salary: player.salary, pos: index,
+      salaries.push({ name: player.name, salary: player.salary, pos: index,
                       y0: y0, y1: y0 += player.salary });
     });
 
