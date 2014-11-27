@@ -5,12 +5,6 @@ A trading dashboard for the GMs in the OCUA Parity League. The dashboard lets yo
 
 running at: [https://trade-dashboard.5apps.com/](https://trade-dashboard.5apps.com/)
 
-Notes:
-
-* The url needed for the spread sheet is not the same as the sharing one. You need to go to file -> publish to web and use that url.
-* Tabletop.js has issues with more complicated spreadsheets so the top row needs to be the column headings for the data and nothing more or it will mess it up
-* Its also a bit tricky to publish just a sub spread sheet to the web - the default is the whole doc so make sure you do this right
-
 Running locally:
 
 ```
