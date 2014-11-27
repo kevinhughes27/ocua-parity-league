@@ -9,4 +9,7 @@ app = ARGV[0]
 # also note this doesn't work for the initial deploy because there is no remote master
 # branch yet
 
+# run this for initial
+# git subtree push --prefix <dir> <remote> master
+
 `git push #{app} \`git subtree split --prefix #{app} master\`:master --force`
