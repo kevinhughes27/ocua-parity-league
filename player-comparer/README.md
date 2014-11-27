@@ -6,8 +6,7 @@ A player stat comparer app written in D3.js
 running at:
 [https://player-comparer.5apps.com/](https://player-comparer.5apps.com/)
 
-Screenshot
-----------
+### Screenshot:
 ![screenshot](https://raw.githubusercontent.com/pickle27/ocua-parity-league/master/player-comparer/screenshot.png)
 
 Notes:

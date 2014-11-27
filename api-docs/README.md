@@ -6,6 +6,5 @@ Live Api Docs for the OCUA Parity League data!
 running at:
 [https://api-docs.5apps.com/](https://api-docs.5apps.com/)
 
-Screenshot
-----------
+### Screenshot:
 ![screenshot](https://raw.githubusercontent.com/pickle27/ocua-parity-league/master/api-docs/screenshot.png)

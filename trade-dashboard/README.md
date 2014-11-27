@@ -5,8 +5,7 @@ A trading dashboard for the GMs in the OCUA Parity League. The dashboard lets yo
 
 running at: [https://trade-dashboard.5apps.com/](https://trade-dashboard.5apps.com/)
 
-Screenshot
-----------
+### Screenshot:
 ![screenshot](https://raw.githubusercontent.com/pickle27/ocua-parity-league/master/trade-dashboard/screenshot.png)
 
 Running locally:
