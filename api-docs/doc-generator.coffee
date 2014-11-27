@@ -12,8 +12,8 @@ class DocGenerator
 
     @call = """
       $.ajax({
-        url: #{@url},
-        type: #{@type},
+        url: '#{@url}',
+        type: '#{@type}',
         dataType: 'jsonp',
         success: function(data) {
           // code here
@@ -21,7 +21,7 @@ class DocGenerator
       })
     """
 
-    #@_apiCallSuccess({})
+    #@_apiCallSuccess({test: 'test'})
 
     operation = $.ajax
       url: @url
@@ -32,12 +32,18 @@ class DocGenerator
   _apiCallSuccess: (response) =>
     @response = JSON.stringify(response, undefined, 2)
     @_renderDoc()
+    @_syntaxHighlight()
     @callback()
 
   _renderDoc: ->
     template = _.template(TEMPLATES.api_call_doc_template)
     html = template(doc: this)
     $('#main').append(html)
+
+  _syntaxHighlight: ->
+    node = _.last($('#main .panel'))
+    $(node).find('pre code').each (i, block) ->
+      hljs.highlightBlock(block);
 
 TEMPLATES =
   api_call_doc_template: """
@@ -61,8 +67,9 @@ TEMPLATES =
 
       <pre>
 <strong>example:</strong>
-
+<code>
 <%= doc.call %>
+</code>
       </pre>
 
       <hr>
@@ -75,7 +82,9 @@ TEMPLATES =
         <div id="<%= doc.title %>-collapse" class="accordion-body collapse">
           <div class="accordion-inner">
             <pre style="margin-top: 10px">
+<code>
 <%= doc.response %>
+</code>
             </pre>
           </div>
         </div
