@@ -452,22 +452,19 @@ BarChart = (function() {
   }
 
   BarChart.prototype.graph = function(trade) {
-    var data;
+    var data, players, salaries, teamName, y0, _i, _len, _ref;
     data = [];
-    window.teamNames.forEach(function(teamName) {
-      var players, salaries, y0;
+    _ref = window.teamNames;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      teamName = _ref[_i];
       players = playersFromTeam(teamName);
+      if (trade) {
+        this._performTrade(players, trade);
+      }
       players = sortPlayersBySalary(players);
       salaries = [];
       y0 = 0;
       players.forEach(function(player, index) {
-        if (trade) {
-          if (player === trade.tradedPlayer) {
-            player = trade.receivedPlayer;
-          } else if (player === trade.receivedPlayer) {
-            player = trade.tradedPlayer;
-          }
-        }
         return salaries.push({
           name: player.name,
           salary: player.salary,
@@ -476,12 +473,12 @@ BarChart = (function() {
           y1: y0 += player.salary
         });
       });
-      return data.push({
+      data.push({
         team: teamName,
         salaries: salaries,
         total: salaries[salaries.length - 1].y1
       });
-    });
+    }
     this.x.domain(data.map(function(d) {
       return d.team;
     }));
@@ -495,6 +492,22 @@ BarChart = (function() {
     } else {
       return this._updatePlot(data);
     }
+  };
+
+  BarChart.prototype._performTrade = function(players, trade) {
+    var index, player, _i, _len, _results;
+    _results = [];
+    for (index = _i = 0, _len = players.length; _i < _len; index = ++_i) {
+      player = players[index];
+      if (player === trade.tradedPlayer) {
+        _results.push(players[index] = trade.receivedPlayer);
+      } else if (player === trade.receivedPlayer) {
+        _results.push(players[index] = trade.tradedPlayer);
+      } else {
+        _results.push(void 0);
+      }
+    }
+    return _results;
   };
 
   BarChart.prototype._initPlot = function(data) {

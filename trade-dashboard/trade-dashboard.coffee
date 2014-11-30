@@ -411,20 +411,16 @@ class BarChart
 
   graph: (trade) ->
     data = []
-    window.teamNames.forEach (teamName) ->
+    for teamName in window.teamNames
       players = playersFromTeam(teamName)
+      @_performTrade(players, trade) if trade
       players = sortPlayersBySalary(players)
 
       salaries = []
       y0 = 0
       players.forEach (player, index) ->
-        if trade # optionally modify the data with a trade
-          if player is trade.tradedPlayer
-            player = trade.receivedPlayer
-          else if player is trade.receivedPlayer
-            player = trade.tradedPlayer
-
         salaries.push {name: player.name, salary: player.salary, pos: index, y0: y0, y1: y0 += player.salary}
+
       data.push {team: teamName, salaries: salaries, total: salaries[salaries.length - 1].y1}
 
     @x.domain data.map( (d) -> d.team )
@@ -435,6 +431,12 @@ class BarChart
     else
       @_updatePlot(data)
 
+  _performTrade: (players, trade) ->
+    for player, index in players
+      if player is trade.tradedPlayer
+        players[index] = trade.receivedPlayer
+      else if player is trade.receivedPlayer
+        players[index] = trade.tradedPlayer
 
   _initPlot: (data) ->
     @chart.append("g")
