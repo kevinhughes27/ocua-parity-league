@@ -8,8 +8,20 @@ running at: [https://trade-dashboard.5apps.com/](https://trade-dashboard.5apps.c
 ### Screenshot:
 ![screenshot](https://raw.githubusercontent.com/pickle27/ocua-parity-league/master/trade-dashboard/screenshot.png)
 
-Running locally:
+Building:
+---------
 
+Run:
+
+```
+coffee -bcw *.coffee
+```
+
+In the project directory and everytime the coffee file is saved it will be compiled into js.
+
+
+Running locally:
+----------------
 ```
 python -m SimpleHTTPServer 8000
 ```
