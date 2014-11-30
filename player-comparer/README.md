@@ -15,6 +15,17 @@ Notes:
 * Tabletop.js has issues with more complicated spreadsheets so the top row needs to be the column headings for the data and nothing more or it will mess it up
 * Its also a bit tricky to publish just a sub spread sheet to the web - the default is the whole doc so make sure you do this right
 
+Building:
+
+Run:
+
+```
+coffee -bcw *.coffee
+```
+
+In the project directory and everytime the coffee file is saved it will be compiled into js.
+
+
 Running locally:
 
 ```
