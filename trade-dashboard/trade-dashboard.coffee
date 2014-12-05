@@ -22,10 +22,21 @@ window.onload = ->
   window.salary_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Salaries&weeknumber='+weeknumber
   window.trades_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Trades&weeknumber='+weeknumber
 
+  if getURLParameter('gm') == 1
+    window.stats_url += '&realnames=YES'
+    window.trades_url += '&realnames=YES'
+
   window.pieChart = new PieChart()
   window.barChart = new BarChart()
 
   load()
+
+getURLParameter = (name) ->
+  query = window.location.search.substring(1)
+  raw_vars = query.split("&")
+  for v in raw_vars
+    [key, val] = v.split("=")
+    return decodeURIComponent(val) if key == name
 
 # kicks off the loading steps, a bunch of data is fetched and initialized.
 # these calls are chained so that one happens after the other
