@@ -23,7 +23,7 @@ window.onload = ->
   window.trades_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Trades&weeknumber='+weeknumber
 
   # this will break the compare link if the player uses a nickname
-  if getURLParameter('gm') == 1
+  if getURLParameter('gm') == '1'
     window.stats_url += '&realnames=YES'
     window.trades_url += '&realnames=YES'
 

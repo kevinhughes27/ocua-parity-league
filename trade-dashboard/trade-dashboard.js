@@ -31,7 +31,7 @@ window.onload = function() {
   window.stats_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Stats&weeknumber=' + weeknumber;
   window.salary_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Salaries&weeknumber=' + weeknumber;
   window.trades_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Trades&weeknumber=' + weeknumber;
-  if (getURLParameter('gm') === 1) {
+  if (getURLParameter('gm') === '1') {
     window.stats_url += '&realnames=YES';
     window.trades_url += '&realnames=YES';
   }
