@@ -16,7 +16,7 @@ window.otherPlayers # global var of all the players not on the current team
 window.savedTrades  # global var holding all the trades
 
 window.onload = ->
-  window.weeknumber = 6 
+  window.weeknumber = 8
   window.week = 'W'+weeknumber
   window.stats_url  = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Stats&weeknumber='+weeknumber
   window.salary_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Salaries&weeknumber='+weeknumber
