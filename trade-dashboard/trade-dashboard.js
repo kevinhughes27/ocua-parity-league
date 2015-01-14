@@ -26,7 +26,7 @@ window.otherPlayers;
 window.savedTrades;
 
 window.onload = function() {
-  window.weeknumber = 8;
+  window.weeknumber = 9;
   window.week = 'W' + weeknumber;
   window.stats_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Stats&weeknumber=' + weeknumber;
   window.salary_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Salaries&weeknumber=' + weeknumber;
