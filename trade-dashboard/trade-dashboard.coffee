@@ -22,6 +22,8 @@ window.onload = ->
   window.salary_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Salaries&weeknumber='+weeknumber
   window.trades_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Trades&weeknumber='+weeknumber
 
+  $("#data-version")[0].innerHTML = "Data Version: Week#{window.weeknumber}"
+
   # this will break the compare link if the player uses a nickname
   if getURLParameter('gm') == '1'
     window.stats_url += '&realnames=YES'
@@ -59,7 +61,7 @@ initStats = (data) ->
 
 transformData = ->
   nameIndex = 0
-  teamNameIndex = 2
+  teamNameIndex = 31
   salaryIndex = 29
   window.statsData.forEach (player) ->
     player.name = player[nameIndex]
@@ -77,23 +79,6 @@ fetchSalaries = ->
 initSalaries = (data) ->
   window.salaryCap = data[2][1]
   window.salaryFloor = data[2][2]
-  $("#data-version")[0].innerHTML = "Data Version: Week#{window.weeknumber}"
-  fetchTrades()
-
-fetchTrades = ->
-  $.ajax
-    url: trades_url
-    type: "GET"
-    dataType: "jsonp"
-    success: (data) ->
-      initTrades(data)
-
-# perform confirmed trades
-initTrades = (data) ->
-  data.forEach (trade) ->
-    tradedPlayer = _.find(window.statsData, (player) -> player.name is trade.name)
-    tradedPlayer.team = trade.team  if tradedPlayer
-
   initApp()
 
 initApp = ->
