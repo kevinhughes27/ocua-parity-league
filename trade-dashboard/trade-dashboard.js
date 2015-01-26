@@ -28,9 +28,9 @@ window.savedTrades;
 window.onload = function() {
   window.weeknumber = 10;
   window.week = 'W' + weeknumber;
-  window.stats_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Stats&weeknumber=' + weeknumber;
-  window.salary_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Salaries&weeknumber=' + weeknumber;
-  window.trades_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/dev?resource=Trades&weeknumber=' + weeknumber;
+  window.stats_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/exec?resource=Stats&weeknumber=' + weeknumber;
+  window.salary_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/exec?resource=Salaries&weeknumber=' + weeknumber;
+  window.trades_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/exec?resource=Trades&weeknumber=' + weeknumber;
   $("#data-version")[0].innerHTML = "Data Version: Week" + window.weeknumber;
   if (getURLParameter('gm') === '1') {
     window.stats_url += '&realnames=YES';
