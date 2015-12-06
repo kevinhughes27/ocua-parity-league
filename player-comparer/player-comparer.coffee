@@ -1,3 +1,11 @@
+# Includes
+$ = require('jquery')
+_ = require('underscore')
+d3 = require('d3')
+d3tip = require('d3-tip')(d3)
+typeahead = require('typeahead.js')
+Tabletop = require('tabletop')
+
 # Globals
 window.ocua_spreadsheet_url
 window.spreadsheetData
@@ -9,7 +17,7 @@ window.onload = ->
   load()
 
 load = ->
-  Tabletop.init key: window.ocua_spreadsheet_url, callback: init, simpleSheet: false
+  Tabletop.init key: window.ocua_spreadsheet_url, callback: init, simpleSheet: false, prettyColumnNames: false
 
 init = (data, tabletop) ->
   window.spreadsheetData = data
