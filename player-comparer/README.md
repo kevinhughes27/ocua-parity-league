@@ -22,20 +22,17 @@ Building:
 Run:
 
 ```
-coffee -bcw *.coffee
+npm run build
 ```
-
-In the project directory and everytime the coffee file is saved it will be compiled into js.
-
 
 Running locally:
 ----------------
 
 ```
-python -m SimpleHTTPServer 8000
+npm run server
 ```
 
-Then the app is available at localhost:8000/index.html
+Then the app is available at localhost:8080
 
 Deploying to 5apps:
 
