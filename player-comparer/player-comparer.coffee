@@ -6,23 +6,26 @@ d3tip = require('d3-tip')(d3)
 typeahead = require('typeahead.js')
 Tabletop = require('tabletop')
 
+window.jQuery = $
+bootstrap = require('bootstrap')
+
 # Globals
-window.ocua_spreadsheet_url
-window.spreadsheetData
+window.statsData
 window.playerNames
 
+
+# TableTop
 window.onload = ->
-  window.ocua_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1dxxBgpZ_T5QdLxb6OvY9pH2xuUyNpM8yr5ncUjiGHqQ/pubhtml'
+  ocua_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1dxxBgpZ_T5QdLxb6OvY9pH2xuUyNpM8yr5ncUjiGHqQ/pubhtml'
+  Tabletop.init key: ocua_spreadsheet_url, callback: init, simpleSheet: false, prettyColumnNames: false
+
+
+# PlayerComparer
+init = (data) ->
   window.graph = new Graph()
-  load()
-
-load = ->
-  Tabletop.init key: window.ocua_spreadsheet_url, callback: init, simpleSheet: false, prettyColumnNames: false
-
-init = (data, tabletop) ->
-  window.spreadsheetData = data
-  setName = getURLParameter('set') || _.last(_.keys(window.spreadsheetData))
-  window.playerNames = _.pluck(window.spreadsheetData[setName].elements, 'playersname')
+  window.statsData = data
+  setName = getURLParameter('set') || _.last(_.keys(window.statsData))
+  window.playerNames = _.pluck(window.statsData[setName].elements, 'playersname')
 
   # toggle loading state
   $("div#app > div#loading").hide()
@@ -35,7 +38,7 @@ init = (data, tabletop) ->
 initDataDropdown = ->
   node = $('#dataDropdown > ul.dropdown-menu')
 
-  dataSetNames = _.keys(window.spreadsheetData)
+  dataSetNames = _.keys(window.statsData)
   for name in dataSetNames
     li = "\
       <li>\
@@ -62,8 +65,8 @@ reRender = ->
   playerBName = getURLParameter('playerB') || 'Female Average'
 
   # get the players
-  playerAData = _.find(window.spreadsheetData[setName].elements, (player) -> player.playersname == playerAName)
-  playerBData = _.find(window.spreadsheetData[setName].elements, (player) -> player.playersname == playerBName)
+  playerAData = _.find(window.statsData[setName].elements, (player) -> player.playersname == playerAName)
+  playerBData = _.find(window.statsData[setName].elements, (player) -> player.playersname == playerBName)
 
   playerA =
     name: playerAData.playersname
@@ -124,11 +127,11 @@ updatePlayerEvent = (event) ->
   setName = $('#dataDropdown #btn-text').text()
 
   playerAName = $("input#playerA").val()
-  playerAData = _.find(window.spreadsheetData[setName].elements, (player) -> player.playersname == playerAName)
+  playerAData = _.find(window.statsData[setName].elements, (player) -> player.playersname == playerAName)
 
 
   playerBName = $("input#playerB").val()
-  playerBData = _.find(window.spreadsheetData[setName].elements, (player) -> player.playersname == playerBName)
+  playerBData = _.find(window.statsData[setName].elements, (player) -> player.playersname == playerBName)
 
   if playerAData && playerBData
     playerA =
