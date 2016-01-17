@@ -82734,7 +82734,7 @@ module.exports = Request
 }.call(this));
 
 },{}],345:[function(require,module,exports){
-var $, Graph, Tabletop, _, appPushState, bootstrap, d3, d3tip, getURLParameter, init, initDataDropdown, playerNameMatcher, reRender, transformPercent, transformPlayerData, transformSalary, typeahead, untransformPlayerData, updatePlayerEvent;
+var $, Graph, Tabletop, _, appPushState, bootstrap, d3, d3tip, getURLParameter, initDataDropdown, playerNameMatcher, reRender, transformPercent, transformPlayerData, transformSalary, typeahead, untransformPlayerData, updatePlayerEvent;
 
 $ = require('jquery');
 
@@ -82752,25 +82752,13 @@ window.jQuery = $;
 
 bootstrap = require('bootstrap');
 
-window.statsData;
+window.statsData = null;
 
-window.playerNames;
+window.playerNames = null;
 
 window.onload = function() {
-  var ocua_spreadsheet_url;
-  ocua_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1dxxBgpZ_T5QdLxb6OvY9pH2xuUyNpM8yr5ncUjiGHqQ/pubhtml';
-  return Tabletop.init({
-    key: ocua_spreadsheet_url,
-    callback: init,
-    simpleSheet: false,
-    prettyColumnNames: false
-  });
-};
-
-init = function(data) {
   var setName;
   window.graph = new Graph();
-  window.statsData = data;
   setName = getURLParameter('set') || _.last(_.keys(window.statsData));
   window.playerNames = _.pluck(window.statsData[setName].elements, 'playersname');
   $("div#app > div#loading").hide();

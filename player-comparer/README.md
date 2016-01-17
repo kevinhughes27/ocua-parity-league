@@ -41,3 +41,8 @@ git push style deploy (only using a subtree):
 ```
  git subtree push --prefix player-comparer 5apps master
  ```
+
+Deploying to Google AppScript:
+  run `npm run deploy`
+
+  which will execute the `bin/deploy_to_google.js` script. Note to use this you will need to create a Google API Client in the [Google Developers Console](https://console.developers.google.com) with type `Other`. Click the button to download the client as JSON and save it as `client_secret.json` in the directory (you should also ignore this file in source control).
