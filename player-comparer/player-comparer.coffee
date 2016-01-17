@@ -9,21 +9,14 @@ Tabletop = require('tabletop')
 window.jQuery = $
 bootstrap = require('bootstrap')
 
+
 # Globals
-window.statsData
-window.playerNames
+window.statsData = null
+window.playerNames = null
 
 
-# TableTop
 window.onload = ->
-  ocua_spreadsheet_url = 'https://docs.google.com/spreadsheets/d/1dxxBgpZ_T5QdLxb6OvY9pH2xuUyNpM8yr5ncUjiGHqQ/pubhtml'
-  Tabletop.init key: ocua_spreadsheet_url, callback: init, simpleSheet: false, prettyColumnNames: false
-
-
-# PlayerComparer
-init = (data) ->
   window.graph = new Graph()
-  window.statsData = data
   setName = getURLParameter('set') || _.last(_.keys(window.statsData))
   window.playerNames = _.pluck(window.statsData[setName].elements, 'playersname')
 
