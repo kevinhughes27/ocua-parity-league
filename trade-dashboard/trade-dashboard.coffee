@@ -1,7 +1,4 @@
 # Globals
-window.weeknumber
-window.week
-
 window.stats_ur
 window.salary_url
 window.trades_url
@@ -16,13 +13,9 @@ window.otherPlayers # global var of all the players not on the current team
 window.savedTrades  # global var holding all the trades
 
 window.onload = ->
-  window.weeknumber = 15
-  window.week = 'W'+weeknumber
-  window.stats_url  = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/exec?resource=Stats&weeknumber='+weeknumber
-  window.salary_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/exec?resource=Salaries&weeknumber='+weeknumber
-  window.trades_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/exec?resource=Trades&weeknumber='+weeknumber
-
-  $("#data-version")[0].innerHTML = "Data Version: Week#{window.weeknumber}"
+  window.stats_url  = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/exec?resource=Stats'
+  window.salary_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/exec?resource=Salaries'
+  window.trades_url = 'https://script.google.com/macros/s/AKfycbwMUwbXgU-bbMrQ8SCLBloLV9EPefKn6ira8QlsAEyKNouXCEw/exec?resource=Trades'
 
   # this will break the compare link if the player uses a nickname
   if getURLParameter('gm') == '1'
@@ -171,7 +164,7 @@ tradeUpdate = (event) ->
   tradedPlayerName = $("#tradedPlayer").val()
   receivedPlayerName = $("#receivedPlayer").val()
 
-  url = "https://player-comparer.5apps.com/?set=#{window.week}&playerA=#{tradedPlayerName}&playerB=#{receivedPlayerName}"
+  url = "https://player-comparer.5apps.com/?playerA=#{tradedPlayerName}&playerB=#{receivedPlayerName}"
   $("a#compare").attr "href", url
 
   tradedPlayer = _.find(window.teamPlayers, (player) -> player.name is tradedPlayerName)
