@@ -163,20 +163,21 @@ transformPlayerData = (data) ->
   [{name: "G", value: +data.g},
    {name: "A", value: +data.a},
    {name: "2A", value: +data.a_2},
-   {name: "3A", value: +data.a_3},
-   {name: "4A", value: +data.a_4},
-   {name: "5A", value: +data.a_5},
    {name: "D", value: +data.d},
    {name: "Comp.", value: +data['comp.']},
    {name: "TA", value: +data.ta},
    {name: "TD", value: +data.threwdrop},
-   {name: "Throwing %", value: transformPercent(data.throwing)},
    {name: "Catch", value: +data.catch},
    {name: "Drop", value: +data.drop},
-   {name: "Catching %", value: transformPercent(data.catching)},
-   {name: "PF", value: +data.pointsfor},
-   {name: "PA", value: +data.pointsagainst},
-   {name: "Salary", value: transformSalary(data.previoussalary)},
+   {name: "Pick ups", value: +data['pick-up']},
+   {name: "Callahan", value: +data.callahan},
+   {name: "O+", value: +data['o']},
+   {name: "O-", value: +data['o-']},
+   {name: "D+", value: +data.d_2},
+   {name: "D-", value: +data['d-']},
+   {name: "T %", value: transformPercent(data.t)},
+   {name: "C %", value: transformPercent(data.c)},
+   {name: "Salary", value: transformSalary(data.previous)},
    {name: "New Salary", value: transformSalary(data.nextweekssalary)}]
 
 # Transforms the data the plotted JS object
@@ -186,19 +187,20 @@ untransformPlayerData = (d) ->
     "G": "Goals"
     "A": "Assists"
     "2A": "2nd Assists"
-    "3A": "3rd Assists"
-    "4A": "4th Assists"
-    "5A": "5th Assists"
     "D": "Defenses"
     "Comp.": "Completions"
     "TA": "Throw Aways"
     "TD": "Threw Drops"
-    "Throwing %": "Throwing"
     "Catch": "Catches"
     "Drop": "Drops"
-    "Catching %": "Catching"
-    "PF": "Points for"
-    "PA": "Points against"
+    "Pick ups": "Pick ups"
+    "Callahan": "Callahan"
+    "O+": "O+"
+    "O-": "O-"
+    "D+": "D+"
+    "D-": "D-"
+    "T %": "Throwing"
+    "C %": "Catching"
     "Salary": "Salary"
     "New Salary": "New Salary"
   }[d.name]

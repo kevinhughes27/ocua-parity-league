@@ -82932,15 +82932,6 @@ transformPlayerData = function(data) {
       name: "2A",
       value: +data.a_2
     }, {
-      name: "3A",
-      value: +data.a_3
-    }, {
-      name: "4A",
-      value: +data.a_4
-    }, {
-      name: "5A",
-      value: +data.a_5
-    }, {
       name: "D",
       value: +data.d
     }, {
@@ -82953,26 +82944,38 @@ transformPlayerData = function(data) {
       name: "TD",
       value: +data.threwdrop
     }, {
-      name: "Throwing %",
-      value: transformPercent(data.throwing)
-    }, {
       name: "Catch",
       value: +data["catch"]
     }, {
       name: "Drop",
       value: +data.drop
     }, {
-      name: "Catching %",
-      value: transformPercent(data.catching)
+      name: "Pick ups",
+      value: +data['pick-up']
     }, {
-      name: "PF",
-      value: +data.pointsfor
+      name: "Callahan",
+      value: +data.callahan
     }, {
-      name: "PA",
-      value: +data.pointsagainst
+      name: "O+",
+      value: +data['o']
+    }, {
+      name: "O-",
+      value: +data['o-']
+    }, {
+      name: "D+",
+      value: +data.d_2
+    }, {
+      name: "D-",
+      value: +data['d-']
+    }, {
+      name: "T %",
+      value: transformPercent(data.t)
+    }, {
+      name: "C %",
+      value: transformPercent(data.c)
     }, {
       name: "Salary",
-      value: transformSalary(data.previoussalary)
+      value: transformSalary(data.previous)
     }, {
       name: "New Salary",
       value: transformSalary(data.nextweekssalary)
@@ -82986,19 +82989,20 @@ untransformPlayerData = function(d) {
     "G": "Goals",
     "A": "Assists",
     "2A": "2nd Assists",
-    "3A": "3rd Assists",
-    "4A": "4th Assists",
-    "5A": "5th Assists",
     "D": "Defenses",
     "Comp.": "Completions",
     "TA": "Throw Aways",
     "TD": "Threw Drops",
-    "Throwing %": "Throwing",
     "Catch": "Catches",
     "Drop": "Drops",
-    "Catching %": "Catching",
-    "PF": "Points for",
-    "PA": "Points against",
+    "Pick ups": "Pick ups",
+    "Callahan": "Callahan",
+    "O+": "O+",
+    "O-": "O-",
+    "D+": "D+",
+    "D-": "D-",
+    "T %": "Throwing",
+    "C %": "Catching",
     "Salary": "Salary",
     "New Salary": "New Salary"
   }[d.name];
